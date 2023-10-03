@@ -3,43 +3,46 @@ This section lists command(s) run by WORKFLOW workflow
 
 * Running WORKFLOW
 
-=== Description here ===.
-
-<<<
-  python3<<CODE
-  import subprocess
-  import sys
-  inputStrings = []
-  v = "~{sep=' ' inputVcfs}"
-  vcfFiles = v.split()
-  w = "~{sep=' ' workflows}"
-  workflowIds = w.split()
-  priority = "~{priority}"
-  
-  if len(vcfFiles) != len(workflowIds):
-      print("The arrays with input files and their respective workflow names are not of equal size!")
-  else:
-      for f in range(0, len(vcfFiles)):
-          inputStrings.append("--variant:" + workflowIds[f] + " " + vcfFiles[f])
-
-  javaMemory = ~{jobMemory} - 6 
-  gatkCommand  = "$JAVA_ROOT/bin/java -Xmx" + str(javaMemory) + "G -jar $GATK_ROOT/GenomeAnalysisTK.jar "
-  gatkCommand += "-T CombineVariants "
-  gatkCommand += " ".join(inputStrings)
-  gatkCommand += " -R ~{referenceFasta} "
-  gatkCommand += "-o ~{outputPrefix}_combined.vcf.gz "
-  gatkCommand += "-genotypeMergeOptions PRIORITIZE "
-  gatkCommand += "-priority " + priority
-  gatkCommand += " 2>&1"
-
-  result_output = subprocess.run(gatkCommand, shell=True)
-  sys.exit(result_output.returncode)
-  CODE
->>>
-<<<
-  bcftools annotate -a ~{uniqueVcf} \
- -c FMT/AD,FMT/DP ~{mergedVcf} -Oz \
- -o "~{outputPrefix}.merged.vcf.gz"
-
- tabix -p vcf "~{outputPrefix}.merged.vcf.gz"
->>>
+```
+ 
+ <<<
+   python3<<CODE
+   import subprocess
+   import sys
+   inputStrings = []
+   v = "~{sep=' ' inputVcfs}"
+   vcfFiles = v.split()
+   w = "~{sep=' ' workflows}"
+   workflowIds = w.split()
+   priority = "~{priority}"
+   
+   if len(vcfFiles) != len(workflowIds):
+       print("The arrays with input files and their respective workflow names are not of equal size!")
+   else:
+       for f in range(0, len(vcfFiles)):
+           inputStrings.append("--variant:" + workflowIds[f] + " " + vcfFiles[f])
+ 
+   javaMemory = ~{jobMemory} - 6 
+   gatkCommand  = "$JAVA_ROOT/bin/java -Xmx" + str(javaMemory) + "G -jar $GATK_ROOT/GenomeAnalysisTK.jar "
+   gatkCommand += "-T CombineVariants "
+   gatkCommand += " ".join(inputStrings)
+   gatkCommand += " -R ~{referenceFasta} "
+   gatkCommand += "-o ~{outputPrefix}_combined.vcf.gz "
+   gatkCommand += "-genotypeMergeOptions PRIORITIZE "
+   gatkCommand += "-priority " + priority
+   gatkCommand += " 2>&1"
+ 
+   result_output = subprocess.run(gatkCommand, shell=True)
+   sys.exit(result_output.returncode)
+   CODE
+ >>>
+ ```
+ ```
+ 
+   bcftools annotate -a ~{uniqueVcf} \
+  -c FMT/AD,FMT/DP ~{mergedVcf} -Oz \
+  -o "~{outputPrefix}.merged.vcf.gz"
+ 
+  tabix -p vcf "~{outputPrefix}.merged.vcf.gz"
+ ```
+ 

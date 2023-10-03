@@ -1,17 +1,18 @@
 # mutect2Consensus
 
-Workflow to run extract UMIs from fastq and generate consensus Bams as well as run it thru mutect2 task and combinevariants task
+The Mutect2Consensus workflow will process umiConsensus outputs for the tumour data through mutect2 in tumour only mode to call variants then use information from the matched normal to identify likely germline variants.
 
 ## Overview
 
 ## Dependencies
 
 * [gatk 3.6-0](https://gatk.broadinstitute.org)
-* [python 3.6](https://www.python.org/downloads/)
+* [python 3.9](https://www.python.org/downloads/)
 * [vep 105.0](https://useast.ensembl.org/info/docs/tools/vep/)
 * [gatk 4.1.6.0](https://gatk.broadinstitute.org/)
 * [tabix 0.2.6](https://sourceforge.net/projects/samtools/files/tabix/tabix-0.2.6.tar.bz2/download)
 * [vcf2maf 1.6](https://github.com/mskcc/vcf2maf)
+* [pandas 1.4.2](https://pandas.pydata.org/)
 
 
 ## Usage
@@ -34,6 +35,7 @@ Parameter|Value|Description
 `tumorName`|String|Name of the tumor sample
 `normalName`|String|name of the normal sample
 `reference`|String|reference version
+`freqList`|File|frequency list for maf annotation
 `combineVariants.workflows`|Array[String]|array of ids of producer workflows
 `matchedCombineVariants.workflows`|Array[String]|array of ids of producer workflows
 
@@ -123,6 +125,10 @@ Parameter|Value|Default|Description
 `variantEffectPredictor.targetBedTask_modules`|String|"bedtools/2.27 tabix/0.2.6"|Required environment modules
 `variantEffectPredictor.targetBedTask_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
 `variantEffectPredictor.normalName`|String?|None|Name of the normal sample
+`filterMaf.modules`|String|"python/3.9 pandas/1.4.2"|module for running preprocessing
+`filterMaf.jobMemory`|Int|8|memory allocated to preprocessing, in GB
+`filterMaf.timeout`|Int|1|timeout in hours
+`filterMaf.threads`|Int|1|number of cpu threads to be used
 `matchedMutect2.filter_timeout`|Int|12|Hours before task timeout
 `matchedMutect2.filter_memory`|Int|16|Memory allocated for job
 `matchedMutect2.filter_filterExtraArgs`|String?|None|Extra arguments
@@ -231,6 +237,7 @@ Output | Type | Description
 `matchedVepVcf`|File|vep vcf for matched samples
 `matchedVepVcfIndex`|File|vep vcf index for matched samples
 `matchedMafOutput`|File?|maf output for matched samples
+`filterredMaf`|File?|maf file after filtering
 
 
 ## Commands
@@ -238,7 +245,7 @@ Output | Type | Description
  
  * Running WORKFLOW
  
- === Description here ===.
+```
  
  <<<
    python3<<CODE
@@ -271,13 +278,16 @@ Output | Type | Description
    sys.exit(result_output.returncode)
    CODE
  >>>
- <<<
+ ```
+ ```
+ 
    bcftools annotate -a ~{uniqueVcf} \
   -c FMT/AD,FMT/DP ~{mergedVcf} -Oz \
   -o "~{outputPrefix}.merged.vcf.gz"
  
   tabix -p vcf "~{outputPrefix}.merged.vcf.gz"
- >>>
+ ```
+
  ## Support
 
 For support, please file an issue on the [Github project](https://github.com/oicr-gsi) or send an email to gsi@oicr.on.ca .

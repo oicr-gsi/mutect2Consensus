@@ -1,0 +1,6 @@
+{
+    "names": [
+        "mutect2Consensus"
+    ],
+    "wdl": "mutect2Consensus.wdl"
+}
