@@ -18,18 +18,7 @@
             "mutect2Consensus.filterMaf.modules": null,
             "mutect2Consensus.filterMaf.threads": null,
             "mutect2Consensus.filterMaf.timeout": null,
-            "mutect2Consensus.freqList": {
-                "contents": {
-                    "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL.frequency.20210609.annot.txt",
-                    "externalIds": [
-                        {
-                            "id": "TEST",
-                            "provider": "TEST"
-                        }
-                    ]
-                },
-                "type": "EXTERNAL"
-            },
+            "mutect2Consensus.filterMaf.freqList": "$TGL_FREQUENCY_ROOT/TGL.frequency.20210609.annot.txt",
             "mutect2Consensus.inputIntervalsToParalellizeBy": "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX,chrY",
             "mutect2Consensus.intervalFile": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/CHARM.TS.hg38.bed",
             "mutect2Consensus.matchedAnnotation.jobMemory": null,
