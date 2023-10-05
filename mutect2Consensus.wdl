@@ -40,7 +40,6 @@ workflow mutect2Consensus {
     String tumorName
     String normalName
     String reference
-    File freqList
   }
 
   Map[String,GenomeResources] resources = {
@@ -84,7 +83,6 @@ workflow mutect2Consensus {
     tumorName: "Name of the tumor sample"
     normalName: "name of the normal sample"
     reference: "reference version"
-    freqList: "frequency list for maf annotation"
   }
 
   Array[InputGroup] inputGroups = [ tumorInputGroup, normalInputGroup ]
@@ -161,7 +159,6 @@ workflow mutect2Consensus {
         input:
         mafFile = tumorMaf,
         mafNormalFile = normalMaf,
-        freqList = freqList,
         outputPrefix = outputFileNamePrefix
       }
     }
@@ -449,9 +446,9 @@ task filterMaf {
   input {
     File? mafFile
     File? mafNormalFile
-    File freqList
+    String freqList ="$TGL_FREQUENCY_ROOT/TGL.frequency.20210609.annot.txt"
     String outputPrefix 
-    String modules = "python/3.9 pandas/1.4.2"
+    String modules = "python/3.9 pandas/1.4.2 tgl-frequency/2023-10-04"
     Int jobMemory = 8
     Int timeout = 1
     Int threads = 1

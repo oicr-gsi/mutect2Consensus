@@ -35,7 +35,6 @@ Parameter|Value|Description
 `tumorName`|String|Name of the tumor sample
 `normalName`|String|name of the normal sample
 `reference`|String|reference version
-`freqList`|File|frequency list for maf annotation
 `combineVariants.workflows`|Array[String]|array of ids of producer workflows
 `matchedCombineVariants.workflows`|Array[String]|array of ids of producer workflows
 
@@ -125,7 +124,8 @@ Parameter|Value|Default|Description
 `variantEffectPredictor.targetBedTask_modules`|String|"bedtools/2.27 tabix/0.2.6"|Required environment modules
 `variantEffectPredictor.targetBedTask_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
 `variantEffectPredictor.normalName`|String?|None|Name of the normal sample
-`filterMaf.modules`|String|"python/3.9 pandas/1.4.2"|module for running preprocessing
+`filterMaf.freqList`|String|"$TGL_FREQUENCY_ROOT/TGL.frequency.20210609.annot.txt"|frequency list used in maf annotation
+`filterMaf.modules`|String|"python/3.9 pandas/1.4.2 tgl-frequency/2023-10-04"|module for running preprocessing
 `filterMaf.jobMemory`|Int|8|memory allocated to preprocessing, in GB
 `filterMaf.timeout`|Int|1|timeout in hours
 `filterMaf.threads`|Int|1|number of cpu threads to be used
@@ -245,50 +245,49 @@ Output | Type | Description
  
  * Running WORKFLOW
  
-```
- 
- <<<
-   python3<<CODE
-   import subprocess
-   import sys
-   inputStrings = []
-   v = "~{sep=' ' inputVcfs}"
-   vcfFiles = v.split()
-   w = "~{sep=' ' workflows}"
-   workflowIds = w.split()
-   priority = "~{priority}"
-   
-   if len(vcfFiles) != len(workflowIds):
-       print("The arrays with input files and their respective workflow names are not of equal size!")
-   else:
-       for f in range(0, len(vcfFiles)):
-           inputStrings.append("--variant:" + workflowIds[f] + " " + vcfFiles[f])
- 
-   javaMemory = ~{jobMemory} - 6 
-   gatkCommand  = "$JAVA_ROOT/bin/java -Xmx" + str(javaMemory) + "G -jar $GATK_ROOT/GenomeAnalysisTK.jar "
-   gatkCommand += "-T CombineVariants "
-   gatkCommand += " ".join(inputStrings)
-   gatkCommand += " -R ~{referenceFasta} "
-   gatkCommand += "-o ~{outputPrefix}_combined.vcf.gz "
-   gatkCommand += "-genotypeMergeOptions PRIORITIZE "
-   gatkCommand += "-priority " + priority
-   gatkCommand += " 2>&1"
- 
-   result_output = subprocess.run(gatkCommand, shell=True)
-   sys.exit(result_output.returncode)
-   CODE
- >>>
  ```
- ```
- 
-   bcftools annotate -a ~{uniqueVcf} \
-  -c FMT/AD,FMT/DP ~{mergedVcf} -Oz \
-  -o "~{outputPrefix}.merged.vcf.gz"
- 
-  tabix -p vcf "~{outputPrefix}.merged.vcf.gz"
- ```
-
- ## Support
+  
+  <<<
+    python3<<CODE
+    import subprocess
+    import sys
+    inputStrings = []
+    v = "~{sep=' ' inputVcfs}"
+    vcfFiles = v.split()
+    w = "~{sep=' ' workflows}"
+    workflowIds = w.split()
+    priority = "~{priority}"
+    
+    if len(vcfFiles) != len(workflowIds):
+        print("The arrays with input files and their respective workflow names are not of equal size!")
+    else:
+        for f in range(0, len(vcfFiles)):
+            inputStrings.append("--variant:" + workflowIds[f] + " " + vcfFiles[f])
+  
+    javaMemory = ~{jobMemory} - 6 
+    gatkCommand  = "$JAVA_ROOT/bin/java -Xmx" + str(javaMemory) + "G -jar $GATK_ROOT/GenomeAnalysisTK.jar "
+    gatkCommand += "-T CombineVariants "
+    gatkCommand += " ".join(inputStrings)
+    gatkCommand += " -R ~{referenceFasta} "
+    gatkCommand += "-o ~{outputPrefix}_combined.vcf.gz "
+    gatkCommand += "-genotypeMergeOptions PRIORITIZE "
+    gatkCommand += "-priority " + priority
+    gatkCommand += " 2>&1"
+  
+    result_output = subprocess.run(gatkCommand, shell=True)
+    sys.exit(result_output.returncode)
+    CODE
+  >>>
+  ```
+  ```
+  
+    bcftools annotate -a ~{uniqueVcf} \
+   -c FMT/AD,FMT/DP ~{mergedVcf} -Oz \
+   -o "~{outputPrefix}.merged.vcf.gz"
+  
+   tabix -p vcf "~{outputPrefix}.merged.vcf.gz"
+  ```
+   ## Support
 
 For support, please file an issue on the [Github project](https://github.com/oicr-gsi) or send an email to gsi@oicr.on.ca .
 
