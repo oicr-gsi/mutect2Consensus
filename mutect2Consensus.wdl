@@ -467,15 +467,16 @@ task filterMaf {
     threads: "number of cpu threads to be used"
   }
 
-  # Adapted from https://github.com/oicr-gsi/djerba/blob/GCGI-806_v1.0.0-dev/src/lib/djerba/plugins/tar/snv_indel/plugin.py
-  command <<<
+## Adapted from https://github.com/oicr-gsi/djerba/blob/GCGI-806_v1.0.0-dev/src/lib/djerba/plugins/tar/snv_indel/plugin.py
+## this code will filter a maf file, generated from tumor-only mutect2 calls to identify likely germline calls generated from a mutect2 calls from the matched normal
+command <<<
     python3<<CODE
     import pandas as pd
     maf_file_path = "~{mafFile}"
     maf_normal_path = "~{mafNormalFile}"
     freq_list_path = "~{freqList}"
     output_path_prefix = "~{outputPrefix}"
-    GENES_TO_KEEP = "~{genesToKeep}"
+    GENES_TO_KEEP = "{genesToKeep}"
 
     df_bc = pd.read_csv(maf_normal_path,
                     sep = "\t",
@@ -491,15 +492,18 @@ task filterMaf {
     df_freq = pd.read_csv(freq_list_path,
                   sep = "\t")
 
-    for row in df_pl.iterrows():
+    
+  # annotate rows with information from the matched normal and from the frequency table
+  for row in df_pl.iterrows():
         hugo_symbol = row[1]['Hugo_Symbol']
         chromosome = row[1]['Chromosome']
         start_position = row[1]['Start_Position']
         reference_allele = row[1]['Reference_Allele']
         allele = row[1]['Allele']
     
-        #For normal values
-        # Lookup the entry in the BC
+        # Lookup the entry in the BC and annotate the tumour maf with
+        #   n_depth, n_ref_count, n_alt_count
+
         row_lookup = df_bc[(df_bc['Hugo_Symbol'] == hugo_symbol) & 
                                 (df_bc['Chromosome'] == chromosome) & 
                                 (df_bc['Start_Position'] == start_position) &
@@ -520,7 +524,7 @@ task filterMaf {
             df_pl.at[row[0], "n_ref_count"] = 0
             df_pl.at[row[0], "n_alt_count"] = 0
           
-        # For frequency values
+        # Lookup the entry in the frequency table and annotate the tumour maf with Freq
         
         row_lookup = df_freq[(df_freq['Start_Position'] == row[1]['Start_Position']) &
                             (df_freq['Reference_Allele'] == row[1]['Reference_Allele']) &
@@ -531,7 +535,8 @@ task filterMaf {
             df_pl.at[row[0], 'Freq'] = row_lookup['Freq'].item()
         else:
             df_pl.at[row[0], 'Freq'] = 0
-    
+
+    # Filter the maf to remove rows based on various criteria, but always maintaining genes in the GENES_TO_KEEP list  
     for row in df_pl.iterrows():
         hugo_symbol = row[1]['Hugo_Symbol']
         frequency = row[1]['Freq']
