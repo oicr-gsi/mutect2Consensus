@@ -446,9 +446,10 @@ task filterMaf {
   input {
     File? mafFile
     File? mafNormalFile
-    String freqList ="$TGL_FREQUENCY_ROOT/TGL.frequency.20210609.annot.txt"
+    String freqList ="$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt"
+    String genesToKeep = "$MAF_FILTERING_ROOT/genes_to_keep.txt"
     String outputPrefix 
-    String modules = "python/3.9 pandas/1.4.2 tgl-frequency/2023-10-04"
+    String modules = "python/3.9 pandas/1.4.2 maf-filtering/2023-10-06"
     Int jobMemory = 8
     Int timeout = 1
     Int threads = 1
@@ -458,6 +459,7 @@ task filterMaf {
     mafFile: "input maf file for tumor sample"
     mafNormalFile: "input file for normal sample"
     freqList: "frequency list used in maf annotation"
+    genesToKeep: "gene list in maf filtering"
     outputPrefix: "prefix for output file"
     modules: "module for running preprocessing"
     jobMemory: "memory allocated to preprocessing, in GB"
@@ -473,18 +475,7 @@ task filterMaf {
     maf_normal_path = "~{mafNormalFile}"
     freq_list_path = "~{freqList}"
     output_path_prefix = "~{outputPrefix}"
-    GENES_TO_KEEP = ["BRCA2", 
-                "BRCA1",
-                "PALB2",
-                "TP53",
-                "APC",
-                "EPCAM",
-                "PMS2",
-                "MLH1",
-                "MSH2",
-                "MSH6",
-                "ABCB1",
-                "CCNE1"]
+    GENES_TO_KEEP = "~{genesToKeep}"
 
     df_bc = pd.read_csv(maf_normal_path,
                     sep = "\t",

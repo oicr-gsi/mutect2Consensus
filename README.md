@@ -124,8 +124,9 @@ Parameter|Value|Default|Description
 `variantEffectPredictor.targetBedTask_modules`|String|"bedtools/2.27 tabix/0.2.6"|Required environment modules
 `variantEffectPredictor.targetBedTask_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
 `variantEffectPredictor.normalName`|String?|None|Name of the normal sample
-`filterMaf.freqList`|String|"$TGL_FREQUENCY_ROOT/TGL.frequency.20210609.annot.txt"|frequency list used in maf annotation
-`filterMaf.modules`|String|"python/3.9 pandas/1.4.2 tgl-frequency/2023-10-04"|module for running preprocessing
+`filterMaf.freqList`|String|"$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt"|frequency list used in maf annotation
+`filterMaf.genesToKeep`|String|"$MAF_FILTERING_ROOT/genes_to_keep.txt"|gene list in maf filtering
+`filterMaf.modules`|String|"python/3.9 pandas/1.4.2 maf-filtering/2023-10-06"|module for running preprocessing
 `filterMaf.jobMemory`|Int|8|memory allocated to preprocessing, in GB
 `filterMaf.timeout`|Int|1|timeout in hours
 `filterMaf.threads`|Int|1|number of cpu threads to be used
