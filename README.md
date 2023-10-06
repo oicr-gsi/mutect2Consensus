@@ -205,6 +205,13 @@ Parameter|Value|Default|Description
 `matchedVep.targetBedTask_modules`|String|"bedtools/2.27 tabix/0.2.6"|Required environment modules
 `matchedVep.targetBedTask_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
 `matchedVep.normalName`|String?|None|Name of the normal sample
+`matchedFilterMaf.mafNormalFile`|File?|None|input file for normal sample
+`matchedFilterMaf.freqList`|String|"$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt"|frequency list used in maf annotation
+`matchedFilterMaf.genesToKeep`|String|"$MAF_FILTERING_ROOT/genes_to_keep.txt"|gene list in maf filtering
+`matchedFilterMaf.modules`|String|"python/3.9 pandas/1.4.2 maf-filtering/2023-10-06"|module for running preprocessing
+`matchedFilterMaf.jobMemory`|Int|8|memory allocated to preprocessing, in GB
+`matchedFilterMaf.timeout`|Int|1|timeout in hours
+`matchedFilterMaf.threads`|Int|1|number of cpu threads to be used
 
 
 ### Outputs
@@ -239,6 +246,7 @@ Output | Type | Description
 `matchedVepVcfIndex`|File|vep vcf index for matched samples
 `matchedMafOutput`|File?|maf output for matched samples
 `filterredMaf`|File?|maf file after filtering
+`matchedFilterredMaf`|File?|maf file after filtering for matched maf(maf file of matched tumor/normal version)
 
 
 ## Commands
