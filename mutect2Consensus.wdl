@@ -230,7 +230,7 @@ workflow mutect2Consensus {
     call filterMaf as matchedFilterMaf {
         input:
         mafFile = matchedVep.outputMaf,
-        outputPrefix = outputFileNamePrefix
+        outputPrefix = outputFileNamePrefix + "_matched"
       }
 
   meta {
@@ -502,7 +502,7 @@ task filterMaf {
     df_freq = pd.read_csv(freq_list_path,
                   sep = "\t")
     with open(genes_to_keep_path) as f:
-      GENES_TO_KEEP = f.readlines()
+      GENES_TO_KEEP = f.read()
 
 
     for row in df_pl.iterrows():
@@ -555,8 +555,7 @@ task filterMaf {
         hugo_symbol = row[1]['Hugo_Symbol']
         frequency = row[1]['Freq']
         gnomAD_AF = row[1]['gnomAD_AF']
-        if maf_normal_path:
-          n_alt_count = row[1]['n_alt_count']
+        n_alt_count = row[1]['n_alt_count']
         if hugo_symbol not in GENES_TO_KEEP or frequency > 0.1 or n_alt_count > 4 or gnomAD_AF > 0.001:
             df_pl = df_pl.drop(row[0])   
 
