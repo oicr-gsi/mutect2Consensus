@@ -40,7 +40,6 @@ workflow mutect2Consensus {
     String tumorName
     String normalName
     String reference
-    File freqList
   }
 
   Map[String,GenomeResources] resources = {
@@ -84,7 +83,6 @@ workflow mutect2Consensus {
     tumorName: "Name of the tumor sample"
     normalName: "name of the normal sample"
     reference: "reference version"
-    freqList: "frequency list for maf annotation"
   }
 
   Array[InputGroup] inputGroups = [ tumorInputGroup, normalInputGroup ]
@@ -161,7 +159,6 @@ workflow mutect2Consensus {
         input:
         mafFile = tumorMaf,
         mafNormalFile = normalMaf,
-        freqList = freqList,
         outputPrefix = outputFileNamePrefix
       }
     }
@@ -230,6 +227,12 @@ workflow mutect2Consensus {
         vep_vepCacheDir = resources[reference].variantEffectPredictor_vep_vepCacheDir
     }
 
+    call filterMaf as matchedFilterMaf {
+        input:
+        mafFile = matchedVep.outputMaf,
+        outputPrefix = outputFileNamePrefix + "_matched"
+      }
+
   meta {
     author: "Alexander Fortuna, Rishi Shah and Gavin Peng"
     email: "alexander.fortuna@oicr.on.ca, rshah@oicr.on.ca, and gpeng@oicr.on.ca"
@@ -292,7 +295,8 @@ workflow mutect2Consensus {
       matchedVepVcf: "vep vcf for matched samples",
       matchedVepVcfIndex: "vep vcf index for matched samples",
       matchedMafOutput: "maf output for matched samples",
-      filterredMaf: "maf file after filtering"
+      filterredMaf: "maf file after filtering",
+      matchedFilterredMaf: "maf file after filtering for matched maf(maf file of matched tumor/normal version)"
     }
   }
 
@@ -325,6 +329,7 @@ workflow mutect2Consensus {
     File matchedVepVcfIndex = matchedVep.outputTbi
     File? matchedMafOutput = matchedVep.outputMaf
     File? filterredMaf = filterMaf.filterredMaf
+    File? matchedFilterredMaf = matchedFilterMaf.filterredMaf
   }
 }
 
@@ -449,9 +454,10 @@ task filterMaf {
   input {
     File? mafFile
     File? mafNormalFile
-    File freqList
+    String freqList ="$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt"
+    String genesToKeep = "$MAF_FILTERING_ROOT/genes_to_keep.txt"
     String outputPrefix 
-    String modules = "python/3.9 pandas/1.4.2"
+    String modules = "python/3.9 pandas/1.4.2 maf-filtering/2023-10-06"
     Int jobMemory = 8
     Int timeout = 1
     Int threads = 1
@@ -461,6 +467,7 @@ task filterMaf {
     mafFile: "input maf file for tumor sample"
     mafNormalFile: "input file for normal sample"
     freqList: "frequency list used in maf annotation"
+    genesToKeep: "gene list in maf filtering"
     outputPrefix: "prefix for output file"
     modules: "module for running preprocessing"
     jobMemory: "memory allocated to preprocessing, in GB"
@@ -468,32 +475,24 @@ task filterMaf {
     threads: "number of cpu threads to be used"
   }
 
-  # Adapted from https://github.com/oicr-gsi/djerba/blob/GCGI-806_v1.0.0-dev/src/lib/djerba/plugins/tar/snv_indel/plugin.py
+
   command <<<
     python3<<CODE
+    ## Adapted from https://github.com/oicr-gsi/djerba/blob/GCGI-806_v1.0.0-dev/src/lib/djerba/plugins/tar/snv_indel/plugin.py
+    ## this code will filter a maf file, generated from tumor-only mutect2 calls to identify likely germline calls generated from a mutect2 calls from the matched normal
     import pandas as pd
     maf_file_path = "~{mafFile}"
     maf_normal_path = "~{mafNormalFile}"
     freq_list_path = "~{freqList}"
     output_path_prefix = "~{outputPrefix}"
-    GENES_TO_KEEP = ["BRCA2", 
-                "BRCA1",
-                "PALB2",
-                "TP53",
-                "APC",
-                "EPCAM",
-                "PMS2",
-                "MLH1",
-                "MSH2",
-                "MSH6",
-                "ABCB1",
-                "CCNE1"]
+    genes_to_keep_path = "~{genesToKeep}"
 
-    df_bc = pd.read_csv(maf_normal_path,
-                    sep = "\t",
-                    on_bad_lines="error",
-                    compression='gzip',
-                    skiprows=[0])
+    if maf_normal_path:
+      df_bc = pd.read_csv(maf_normal_path,
+                      sep = "\t",
+                      on_bad_lines="error",
+                      compression='gzip',
+                      skiprows=[0])
 
     df_pl = pd.read_csv(maf_file_path,
                     sep = "\t",
@@ -502,28 +501,35 @@ task filterMaf {
                     skiprows=[0])
     df_freq = pd.read_csv(freq_list_path,
                   sep = "\t")
+    with open(genes_to_keep_path) as f:
+      GENES_TO_KEEP = f.read()
+
 
     for row in df_pl.iterrows():
-        hugo_symbol = row[1]['Hugo_Symbol']
-        chromosome = row[1]['Chromosome']
-        start_position = row[1]['Start_Position']
-        reference_allele = row[1]['Reference_Allele']
-        allele = row[1]['Allele']
-    
-        #For normal values
-        # Lookup the entry in the BC
+      hugo_symbol = row[1]['Hugo_Symbol']
+      chromosome = row[1]['Chromosome']
+      start_position = row[1]['Start_Position']
+      reference_allele = row[1]['Reference_Allele']
+      allele = row[1]['Allele']
+
+      # If there is normal input, annotate rows with information from the matched normal and from the frequency table
+      if maf_normal_path:
+        # Lookup the entry in the BC and annotate the tumour maf with
+        #   n_depth, n_ref_count, n_alt_count
+
         row_lookup = df_bc[(df_bc['Hugo_Symbol'] == hugo_symbol) & 
-                                (df_bc['Chromosome'] == chromosome) & 
-                                (df_bc['Start_Position'] == start_position) &
-                                (df_bc['Reference_Allele'] == reference_allele) &
-                                (df_bc['Allele'] == allele)]
+                    (df_bc['Chromosome'] == chromosome) & 
+                    (df_bc['Start_Position'] == start_position) &
+                    (df_bc['Reference_Allele'] == reference_allele) &
+                    (df_bc['Allele'] == allele)]
+
 
         # If there's only one entry, take its normal values
         if len(row_lookup) == 1:
             df_pl.at[row[0], "n_depth"] = row_lookup['n_depth'].item()
             df_pl.at[row[0], "n_ref_count"] = row_lookup['n_ref_count'].item()
             df_pl.at[row[0], "n_alt_count"] = row_lookup['n_alt_count'].item()
-        
+      
         # If the entry isn't in the table, 
         # or if there is more than one value and so you can't choose which normal values to take, 
         # set them as 0
@@ -531,29 +537,29 @@ task filterMaf {
             df_pl.at[row[0], "n_depth"] = 0
             df_pl.at[row[0], "n_ref_count"] = 0
             df_pl.at[row[0], "n_alt_count"] = 0
-          
-        # For frequency values
-        
-        row_lookup = df_freq[(df_freq['Start_Position'] == row[1]['Start_Position']) &
-                            (df_freq['Reference_Allele'] == row[1]['Reference_Allele']) &
-                            ((df_freq['Tumor_Seq_Allele'] == row[1]['Tumor_Seq_Allele1']) |
-                            (df_freq['Tumor_Seq_Allele'] == row[1]['Tumor_Seq_Allele2']))]
-
-        if len(row_lookup) > 0:
-            df_pl.at[row[0], 'Freq'] = row_lookup['Freq'].item()
-        else:
-            df_pl.at[row[0], 'Freq'] = 0
+            
+      # Lookup the entry in the frequency table and annotate the tumour maf with Freq
     
+      row_lookup = df_freq[(df_freq['Start_Position'] == row[1]['Start_Position']) &
+                          (df_freq['Reference_Allele'] == row[1]['Reference_Allele']) &
+                          ((df_freq['Tumor_Seq_Allele'] == row[1]['Tumor_Seq_Allele1']) |
+                          (df_freq['Tumor_Seq_Allele'] == row[1]['Tumor_Seq_Allele2']))]
+
+      if len(row_lookup) > 0:
+          df_pl.at[row[0], 'Freq'] = row_lookup['Freq'].item()
+      else:
+          df_pl.at[row[0], 'Freq'] = 0
+
+    # Filter the maf to remove rows based on various criteria, but always maintaining genes in the GENES_TO_KEEP list  
     for row in df_pl.iterrows():
         hugo_symbol = row[1]['Hugo_Symbol']
         frequency = row[1]['Freq']
-        n_alt_count = row[1]['n_alt_count']
         gnomAD_AF = row[1]['gnomAD_AF']
+        n_alt_count = row[1]['n_alt_count']
         if hugo_symbol not in GENES_TO_KEEP or frequency > 0.1 or n_alt_count > 4 or gnomAD_AF > 0.001:
             df_pl = df_pl.drop(row[0])   
 
     df_pl.to_csv(output_path_prefix + '_filtered_maf_for_tar.maf.gz', sep = "\t", compression='gzip', index=False)
-
     CODE
   >>>
 
