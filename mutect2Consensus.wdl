@@ -428,7 +428,7 @@ parameter_meta {
  threads: "number of cpu threads to be used"
 }
 
-String basename = basename(uniqueVcf, "all.unique.dcs.sorted.mutect2.filtered.vcf.gz")
+String basename = basename(uniqueVcf, ".all.unique.dcs.sorted.mutect2.filtered.vcf.gz")
 command <<<
   bcftools annotate -a ~{uniqueVcf} \
  -c FMT/AD,FMT/DP ~{mergedVcf} -Oz \
