@@ -212,6 +212,7 @@ workflow mutect2Consensus {
         vcfIndex = matchedAnnotation.annotatedCombinedIndex,
         toMAF = true,
         onlyTumor = false,
+        normalName = normalName,
         tumorOnlyAlign_updateTagValue = true,
         vcf2maf_retainInfoProvided = true,
         vep_referenceFasta = resources[reference].inputRefFasta,
