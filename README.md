@@ -70,6 +70,9 @@ Parameter|Value|Default|Description
 `mutect2.ponIdx`|File?|None|pon ID
 `mutect2.gnomad`|File?|None|gnomad
 `mutect2.gnomadIdx`|File?|None|gnomad ID
+`getFileName.jobMemory`|Int|4|memory allocated to preprocessing, in GB
+`getFileName.timeout`|Int|1|timeout in hours
+`getFileName.threads`|Int|1|number of cpu threads to be used
 `combineVariants.jobMemory`|Int|24|memory allocated to preprocessing, in GB
 `combineVariants.timeout`|Int|20|timeout in hours
 `combineVariants.threads`|Int|8|number of cpu threads to be used
@@ -151,6 +154,9 @@ Parameter|Value|Default|Description
 `matchedMutect2.ponIdx`|File?|None|pon ID
 `matchedMutect2.gnomad`|File?|None|gnomad
 `matchedMutect2.gnomadIdx`|File?|None|gnomad ID
+`matched_getFileName.jobMemory`|Int|4|memory allocated to preprocessing, in GB
+`matched_getFileName.timeout`|Int|1|timeout in hours
+`matched_getFileName.threads`|Int|1|number of cpu threads to be used
 `matchedCombineVariants.jobMemory`|Int|24|memory allocated to preprocessing, in GB
 `matchedCombineVariants.timeout`|Int|20|timeout in hours
 `matchedCombineVariants.threads`|Int|8|number of cpu threads to be used
@@ -204,7 +210,6 @@ Parameter|Value|Default|Description
 `matchedVep.targetBedTask_jobMemory`|Int|32|Memory allocated for this job (GB)
 `matchedVep.targetBedTask_modules`|String|"bedtools/2.27 tabix/0.2.6"|Required environment modules
 `matchedVep.targetBedTask_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
-`matchedVep.normalName`|String?|None|Name of the normal sample
 `matchedFilterMaf.mafNormalFile`|File?|None|input file for normal sample
 `matchedFilterMaf.freqList`|String|"$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt"|frequency list used in maf annotation
 `matchedFilterMaf.genesToKeep`|String|"$MAF_FILTERING_ROOT/genes_to_keep.txt"|gene list in maf filtering
@@ -250,9 +255,9 @@ Output | Type | Description
 
 
 ## Commands
- This section lists command(s) run by WORKFLOW workflow
+ This section lists command(s) run by mutect2Consensus workflow
  
- * Running WORKFLOW
+ * Running mutect2Consensus
  
  ```
   
