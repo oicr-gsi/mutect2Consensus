@@ -487,6 +487,7 @@ task filterMaf {
     freq_list_path = "~{freqList}"
     output_path_prefix = "~{outputPrefix}"
     genes_to_keep_path = "~{genesToKeep}"
+    clean_columns = ["t_depth", "t_ref_count", "t_alt_count", "n_depth", "n_ref_count", "n_alt_count", "gnomAD_AF"]
 
     if maf_normal_path:
       df_bc = pd.read_csv(maf_normal_path,
@@ -495,11 +496,26 @@ task filterMaf {
                       compression='gzip',
                       skiprows=[0])
 
+      # Clean up df_bc if normal maf available
+      for column in clean_columns:
+        # Convert to numeric, setting errors='coerce' to turn non-numeric values into NaN
+        df_bc[column] = pd.to_numeric(df_bc[column], errors='coerce')
+        # Replace NaN with 0
+        df_bc[column] = df_bc[column].fillna(0)
+
     df_pl = pd.read_csv(maf_file_path,
                     sep = "\t",
                     on_bad_lines="error",
                     compression='gzip',
                     skiprows=[0])
+    
+    # Clean up df_pl
+    for column in clean_columns:
+      # Convert to numeric, setting errors='coerce' to turn non-numeric values into NaN
+      df_pl[column] = pd.to_numeric(df_pl[column], errors='coerce')
+      # Replace NaN with 0
+      df_pl[column] = df_pl[column].fillna(0)
+
     df_freq = pd.read_csv(freq_list_path,
                   sep = "\t")
     with open(genes_to_keep_path) as f:
