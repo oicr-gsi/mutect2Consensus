@@ -110,12 +110,17 @@ workflow mutect2Consensus {
       Array[File] mutect2FilteredVcfFiles = mutect2.filteredVcfFile
       Array[File] mutect2FilteredVcfIndexes = mutect2.filteredVcfIndex
 
+      call getFileName{
+        input:
+          fileName = mutect2FilteredVcfFiles[0]
+      }
+
       call combineVariants {
         input: 
           inputVcfs = [mutect2FilteredVcfFiles[0],mutect2FilteredVcfFiles[1]],
           inputIndexes = [mutect2FilteredVcfIndexes[0],mutect2FilteredVcfIndexes[1]],
           priority = "mutect2-dcsSc,mutect2-sscsSc",
-          outputPrefix = outputFileNamePrefix,
+          outputPrefix = getFileName.outputFileName,
           referenceFasta = resources[reference].inputRefFasta,
           modules = resources[reference].combineVariants_modules
       }
@@ -125,7 +130,8 @@ workflow mutect2Consensus {
           uniqueVcf = mutect2FilteredVcfFiles[2],
           uniqueVcfIndex = mutect2FilteredVcfIndexes[2],
           mergedVcf = combineVariants.combinedVcf,
-          mergedVcfIndex = combineVariants.combinedIndex
+          mergedVcfIndex = combineVariants.combinedIndex,
+          outputPrefix = getFileName.outputFileName
       }
 
       call vep.variantEffectPredictor {
@@ -187,13 +193,18 @@ workflow mutect2Consensus {
     }
     Array[File] matchedMutect2FilteredVcfFiles = matchedMutect2.filteredVcfFile
     Array[File] matchedMutect2FilteredVcfIndexes = matchedMutect2.filteredVcfIndex
+
+    call getFileName as matched_getFileName{
+      input:
+      fileName = matchedMutect2FilteredVcfFiles[0]
+    }
     
     call combineVariants as matchedCombineVariants {
       input: 
         inputVcfs = [matchedMutect2FilteredVcfFiles[0],matchedMutect2FilteredVcfFiles[1]],
         inputIndexes = [matchedMutect2FilteredVcfIndexes[0],matchedMutect2FilteredVcfIndexes[1]],
         priority = "mutect2-dcsSc,mutect2-sscsSc",
-        outputPrefix = outputFileNamePrefix,
+        outputPrefix = matched_getFileName.outputFileName + "_matched",
         referenceFasta = resources[reference].inputRefFasta,
         modules = resources[reference].combineVariants_modules
     }
@@ -203,7 +214,8 @@ workflow mutect2Consensus {
         uniqueVcf = matchedMutect2FilteredVcfFiles[2],
         uniqueVcfIndex = matchedMutect2FilteredVcfIndexes[2],
         mergedVcf = matchedCombineVariants.combinedVcf,
-        mergedVcfIndex = matchedCombineVariants.combinedIndex
+        mergedVcfIndex = matchedCombineVariants.combinedIndex,
+        outputPrefix = matched_getFileName.outputFileName + "_matched"
     }
 
     call vep.variantEffectPredictor as matchedVep{
@@ -334,6 +346,36 @@ workflow mutect2Consensus {
   }
 }
 
+task getFileName {
+  input {
+    File fileName
+    Int jobMemory = 4
+    Int timeout = 1
+    Int threads = 1
+  }
+
+  parameter_meta {
+    fileName: "the file to get basename with"
+    jobMemory: "memory allocated to preprocessing, in GB"
+    timeout: "timeout in hours"
+    threads: "number of cpu threads to be used"
+    }
+
+  command <<<
+    basename ~{fileName} | cut -d. -f1 
+  >>>
+
+  output {
+    String outputFileName = read_string(stdout())
+  }
+
+  runtime {
+    memory:  "~{jobMemory} GB"
+    cpu:     "~{threads}"
+    timeout: "~{timeout}"
+  }
+}
+
 task combineVariants {
 input {
  Array[File] inputVcfs
@@ -412,6 +454,7 @@ input {
  File uniqueVcfIndex
  File mergedVcf
  File mergedVcfIndex
+ String outputPrefix
  String modules = "samtools/1.9 bcftools/1.9 htslib/1.9 tabix/1.9"
  Int jobMemory = 24
  Int timeout = 20
@@ -423,19 +466,19 @@ parameter_meta {
  uniqueVcfIndex: "input unique tabix indexes for vcf files"
  mergedVcf: "input merged vcf"
  mergedVcfIndex: "input merged vcf index"
+ outputPrefix: "prefix for output file"
  modules: "module for running preprocessing"
  jobMemory: "memory allocated to preprocessing, in GB"
  timeout: "timeout in hours"
  threads: "number of cpu threads to be used"
 }
 
-String basename = basename(uniqueVcf, ".all.unique.dcs.sorted.mutect2.filtered.vcf.gz")
 command <<<
   bcftools annotate -a ~{uniqueVcf} \
  -c FMT/AD,FMT/DP ~{mergedVcf} -Oz \
- -o "~{basename}.merged.vcf.gz"
+ -o "~{outputPrefix}.merged.vcf.gz"
 
- tabix -p vcf "~{basename}.merged.vcf.gz"
+ tabix -p vcf "~{outputPrefix}.merged.vcf.gz"
 >>>
 
 runtime {
@@ -446,8 +489,8 @@ runtime {
 }
 
 output {
-  File annotatedCombinedVcf = "~{basename}.merged.vcf.gz"
-  File annotatedCombinedIndex = "~{basename}.merged.vcf.gz.tbi"
+  File annotatedCombinedVcf = "~{outputPrefix}.merged.vcf.gz"
+  File annotatedCombinedIndex = "~{outputPrefix}.merged.vcf.gz.tbi"
 }
 }
 

@@ -250,9 +250,9 @@ Output | Type | Description
 
 
 ## Commands
- This section lists command(s) run by WORKFLOW workflow
+ This section lists command(s) run by mutect2Consensus workflow
  
- * Running WORKFLOW
+ * Running mutect2Consensus
  
  ```
   
