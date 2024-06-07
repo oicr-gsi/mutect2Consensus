@@ -591,7 +591,7 @@
             {
               "metrics_calculate": "@CHECKOUT@/tests/calculate.sh",
               "metrics_compare": "@CHECKOUT@/tests/compare.sh",
-              "output_metrics": "/.mounts/labs/gsi/testdata/mutect2Consensus/output_expectation/TEST_0001.metrics",
+              "output_metrics": "/.mounts/labs/gsi/testdata/mutect2Consensus/output_expectation/1.0.3/TEST_0001.metrics",
               "type": "script"
             }
           ]
