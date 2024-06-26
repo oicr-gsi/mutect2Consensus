@@ -1,3 +1,5 @@
+## 1.1.0 - 2024-06-25
+[GRD-797](https://jira.oicr.on.ca/browse/GRD-797) - add vidarr labels to outputs (changes to medata only)
 ## 1.0.1 - 2024-06-07
 - Added tumour and normal maf clean up before filtering (convert to numeric, replace NaN with 0)
 ## 1.0.0 -2023-10-02

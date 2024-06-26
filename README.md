@@ -204,7 +204,6 @@ Parameter|Value|Default|Description
 `matchedVep.targetBedTask_jobMemory`|Int|32|Memory allocated for this job (GB)
 `matchedVep.targetBedTask_modules`|String|"bedtools/2.27 tabix/0.2.6"|Required environment modules
 `matchedVep.targetBedTask_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
-`matchedVep.normalName`|String?|None|Name of the normal sample
 `matchedFilterMaf.mafNormalFile`|File?|None|input file for normal sample
 `matchedFilterMaf.freqList`|String|"$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt"|frequency list used in maf annotation
 `matchedFilterMaf.genesToKeep`|String|"$MAF_FILTERING_ROOT/genes_to_keep.txt"|gene list in maf filtering
@@ -216,45 +215,47 @@ Parameter|Value|Default|Description
 
 ### Outputs
 
-Output | Type | Description
----|---|---
-`tumorDcsScVcf`|File|DCS vcf for tumor sample
-`tumorDcsScVcfIndex`|File|DCS vcf index for tumor sample
-`tumorSscsScVcf`|File|SSCS vcf for tumor sample
-`tumorSscsScVcfIndex`|File|SSCS vcf index for tumor sample
-`tumorAllUniqueVcf`|File|vcf of DCS + singletons for tumor sample
-`tumorAllUniqueVcfIndex`|File|vcf index for DCS + singletons for tumor sample
-`tumorVepVcf`|File|vep vcf for tumor sample
-`tumorVepVcfIndex`|File|vep vcf index for tumor sample
-`tumorMafOutput`|File?|maf output for tumor sample
-`normalDcsScVcf`|File|DCS vcf for normal sample
-`normalDcsScVcfIndex`|File|DCS vcf index for normal sample
-`normalSscsScVcf`|File|SSCS vcf for normal sample
-`normalSscsScVcfIndex`|File|SSCS vcf index for normal sample
-`normalAllUniqueVcf`|File|vcf of DCS + singletons for tumor sample
-`normalAllUniqueVcfIndex`|File|vcf index for DCS + singletons for tumor sample
-`normalVepVcf`|File|vep vcf for normal sample
-`normalVepVcfIndex`|File|vep vcf index for normal sample
-`normalMafOutput`|File?|maf output for normal sample
-`matchedDcsScVcf`|File|DCS vcf for matched samples
-`matchedDcsScVcfIndex`|File|DCS vcf index for matched samples
-`matchedSscsScVcf`|File|SSCS vcf for matched samples
-`matchedSscsScVcfIndex`|File|SSCS vcf index for matched samples
-`matchedAllUniqueVcf`|File|vcf of DCS + singletons for matched samples
-`matchedAllUniqueVcfIndex`|File|vcf index for DCS + singletons for matched samples
-`matchedVepVcf`|File|vep vcf for matched samples
-`matchedVepVcfIndex`|File|vep vcf index for matched samples
-`matchedMafOutput`|File?|maf output for matched samples
-`filterredMaf`|File?|maf file after filtering
-`matchedFilterredMaf`|File?|maf file after filtering for matched maf(maf file of matched tumor/normal version)
+Output | Type | Description | Labels
+---|---|---|---
+`tumorDcsScVcf`|File|DCS vcf for tumor sample|vidarr_label: tumorDcsScVcf
+`tumorDcsScVcfIndex`|File|DCS vcf index for tumor sample|vidarr_label: tumorDcsScVcfIndex
+`tumorSscsScVcf`|File|SSCS vcf for tumor sample|vidarr_label: tumorSscsScVcf
+`tumorSscsScVcfIndex`|File|SSCS vcf index for tumor sample|vidarr_label: tumorSscsScVcfIndex
+`tumorAllUniqueVcf`|File|vcf of DCS + singletons for tumor sample|vidarr_label: tumorAllUniqueVcf
+`tumorAllUniqueVcfIndex`|File|vcf index for DCS + singletons for tumor sample|vidarr_label: tumorAllUniqueVcfIndex
+`tumorVepVcf`|File|vep vcf for tumor sample|vidarr_label: tumorVepVcf
+`tumorVepVcfIndex`|File|vep vcf index for tumor sample|vidarr_label: tumorVepVcfIndex
+`tumorMafOutput`|File?|maf output for tumor sample|vidarr_label: tumorMafOutput
+`normalDcsScVcf`|File|DCS vcf for normal sample|vidarr_label: normalDcsScVcf
+`normalDcsScVcfIndex`|File|DCS vcf index for normal sample|vidarr_label: normalDcsScVcfIndex
+`normalSscsScVcf`|File|SSCS vcf for normal sample|vidarr_label: normalSscsScVcf
+`normalSscsScVcfIndex`|File|SSCS vcf index for normal sample|vidarr_label: normalSscsScVcfIndex
+`normalAllUniqueVcf`|File|vcf of DCS + singletons for tumor sample|vidarr_label: normalAllUniqueVcf
+`normalAllUniqueVcfIndex`|File|vcf index for DCS + singletons for tumor sample|vidarr_label: normalAllUniqueVcfIndex
+`normalVepVcf`|File|vep vcf for normal sample|vidarr_label: normalVepVcf
+`normalVepVcfIndex`|File|vep vcf index for normal sample|vidarr_label: normalVepVcfIndex
+`normalMafOutput`|File?|maf output for normal sample|vidarr_label: normalMafOutput
+`matchedDcsScVcf`|File|DCS vcf for matched samples|vidarr_label: matchedDcsScVcf
+`matchedDcsScVcfIndex`|File|DCS vcf index for matched samples|vidarr_label: matchedDcsScVcfIndex
+`matchedSscsScVcf`|File|SSCS vcf for matched samples|vidarr_label: matchedSscsScVcf
+`matchedSscsScVcfIndex`|File|SSCS vcf index for matched samples|vidarr_label: matchedSscsScVcfIndex
+`matchedAllUniqueVcf`|File|vcf of DCS + singletons for matched samples|vidarr_label: matchedAllUniqueVcf
+`matchedAllUniqueVcfIndex`|File|vcf index for DCS + singletons for matched samples|vidarr_label: matchedAllUniqueVcfIndex
+`matchedVepVcf`|File|vep vcf for matched samples|vidarr_label: matchedVepVcf
+`matchedVepVcfIndex`|File|vep vcf index for matched samples|vidarr_label: matchedVepVcfIndex
+`matchedMafOutput`|File?|maf output for matched samples|vidarr_label: matchedMafOutput
+`filterredMaf`|File?|maf file after filtering|vidarr_label: filterredMaf
+`matchedFilterredMaf`|File?|maf file after filtering for matched maf(maf file of matched tumor/normal version)|vidarr_label: matchedFilterredMaf
 
 
 ## Commands
- This section lists command(s) run by WORKFLOW workflow
+This section lists command(s) run by WORKFLOW workflow
  
- * Running WORKFLOW
+* Running WORKFLOW
  
- ```
+
+### Preprocessing and running CombineVariants
+```
   
   <<<
     python3<<CODE
@@ -287,16 +288,19 @@ Output | Type | Description
     sys.exit(result_output.returncode)
     CODE
   >>>
-  ```
-  ```
+```
+### Annotation with bcftools
+
+```
   
     bcftools annotate -a ~{uniqueVcf} \
    -c FMT/AD,FMT/DP ~{mergedVcf} -Oz \
    -o "~{outputPrefix}.merged.vcf.gz"
   
    tabix -p vcf "~{outputPrefix}.merged.vcf.gz"
-  ```
-   ## Support
+```
+
+## Support
 
 For support, please file an issue on the [Github project](https://github.com/oicr-gsi) or send an email to gsi@oicr.on.ca .
 

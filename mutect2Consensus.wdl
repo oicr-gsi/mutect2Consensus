@@ -269,36 +269,123 @@ workflow mutect2Consensus {
      }
     ]
     output_meta: {
-      tumorDcsScVcf: "DCS vcf for tumor sample",
-      tumorDcsScVcfIndex: "DCS vcf index for tumor sample",
-      tumorSscsScVcf: "SSCS vcf for tumor sample",
-      tumorSscsScVcfIndex: "SSCS vcf index for tumor sample",
-      tumorAllUniqueVcf: "vcf of DCS + singletons for tumor sample",
-      tumorAllUniqueVcfIndex: "vcf index for DCS + singletons for tumor sample",
-      tumorVepVcf: "vep vcf for tumor sample",
-      tumorVepVcfIndex: "vep vcf index for tumor sample",
-      tumorMafOutput: "maf output for tumor sample",
-      normalDcsScVcf: "DCS vcf for normal sample",
-      normalDcsScVcfIndex: "DCS vcf index for normal sample",
-      normalSscsScVcf: "SSCS vcf for normal sample",
-      normalSscsScVcfIndex: "SSCS vcf index for normal sample",
-      normalAllUniqueVcf: "vcf of DCS + singletons for tumor sample",
-      normalAllUniqueVcfIndex: "vcf index for DCS + singletons for tumor sample",
-      normalVepVcf: "vep vcf for normal sample",
-      normalVepVcfIndex: "vep vcf index for normal sample",
-      normalMafOutput: "maf output for normal sample",
-      matchedDcsScVcf: "DCS vcf for matched samples",
-      matchedDcsScVcfIndex: "DCS vcf index for matched samples",
-      matchedSscsScVcf: "SSCS vcf for matched samples",
-      matchedSscsScVcfIndex: "SSCS vcf index for matched samples",
-      matchedAllUniqueVcf: "vcf of DCS + singletons for matched samples",
-      matchedAllUniqueVcfIndex: "vcf index for DCS + singletons for matched samples",
-      matchedVepVcf: "vep vcf for matched samples",
-      matchedVepVcfIndex: "vep vcf index for matched samples",
-      matchedMafOutput: "maf output for matched samples",
-      filterredMaf: "maf file after filtering",
-      matchedFilterredMaf: "maf file after filtering for matched maf(maf file of matched tumor/normal version)"
+    tumorDcsScVcf: {
+        description: "DCS vcf for tumor sample",
+        vidarr_label: "tumorDcsScVcf"
+    },
+    tumorDcsScVcfIndex: {
+        description: "DCS vcf index for tumor sample",
+        vidarr_label: "tumorDcsScVcfIndex"
+    },
+    tumorSscsScVcf: {
+        description: "SSCS vcf for tumor sample",
+        vidarr_label: "tumorSscsScVcf"
+    },
+    tumorSscsScVcfIndex: {
+        description: "SSCS vcf index for tumor sample",
+        vidarr_label: "tumorSscsScVcfIndex"
+    },
+    tumorAllUniqueVcf: {
+        description: "vcf of DCS + singletons for tumor sample",
+        vidarr_label: "tumorAllUniqueVcf"
+    },
+    tumorAllUniqueVcfIndex: {
+        description: "vcf index for DCS + singletons for tumor sample",
+        vidarr_label: "tumorAllUniqueVcfIndex"
+    },
+    tumorVepVcf: {
+        description: "vep vcf for tumor sample",
+        vidarr_label: "tumorVepVcf"
+    },
+    tumorVepVcfIndex: {
+        description: "vep vcf index for tumor sample",
+        vidarr_label: "tumorVepVcfIndex"
+    },
+    tumorMafOutput: {
+        description: "maf output for tumor sample",
+        vidarr_label: "tumorMafOutput"
+    },
+    normalDcsScVcf: {
+        description: "DCS vcf for normal sample",
+        vidarr_label: "normalDcsScVcf"
+    },
+    normalDcsScVcfIndex: {
+        description: "DCS vcf index for normal sample",
+        vidarr_label: "normalDcsScVcfIndex"
+    },
+    normalSscsScVcf: {
+        description: "SSCS vcf for normal sample",
+        vidarr_label: "normalSscsScVcf"
+    },
+    normalSscsScVcfIndex: {
+        description: "SSCS vcf index for normal sample",
+        vidarr_label: "normalSscsScVcfIndex"
+    },
+    normalAllUniqueVcf: {
+        description: "vcf of DCS + singletons for tumor sample",
+        vidarr_label: "normalAllUniqueVcf"
+    },
+    normalAllUniqueVcfIndex: {
+        description: "vcf index for DCS + singletons for tumor sample",
+        vidarr_label: "normalAllUniqueVcfIndex"
+    },
+    normalVepVcf: {
+        description: "vep vcf for normal sample",
+        vidarr_label: "normalVepVcf"
+    },
+    normalVepVcfIndex: {
+        description: "vep vcf index for normal sample",
+        vidarr_label: "normalVepVcfIndex"
+    },
+    normalMafOutput: {
+        description: "maf output for normal sample",
+        vidarr_label: "normalMafOutput"
+    },
+    matchedDcsScVcf: {
+        description: "DCS vcf for matched samples",
+        vidarr_label: "matchedDcsScVcf"
+    },
+    matchedDcsScVcfIndex: {
+        description: "DCS vcf index for matched samples",
+        vidarr_label: "matchedDcsScVcfIndex"
+    },
+    matchedSscsScVcf: {
+        description: "SSCS vcf for matched samples",
+        vidarr_label: "matchedSscsScVcf"
+    },
+    matchedSscsScVcfIndex: {
+        description: "SSCS vcf index for matched samples",
+        vidarr_label: "matchedSscsScVcfIndex"
+    },
+    matchedAllUniqueVcf: {
+        description: "vcf of DCS + singletons for matched samples",
+        vidarr_label: "matchedAllUniqueVcf"
+    },
+    matchedAllUniqueVcfIndex: {
+        description: "vcf index for DCS + singletons for matched samples",
+        vidarr_label: "matchedAllUniqueVcfIndex"
+    },
+    matchedVepVcf: {
+        description: "vep vcf for matched samples",
+        vidarr_label: "matchedVepVcf"
+    },
+    matchedVepVcfIndex: {
+        description: "vep vcf index for matched samples",
+        vidarr_label: "matchedVepVcfIndex"
+    },
+    matchedMafOutput: {
+        description: "maf output for matched samples",
+        vidarr_label: "matchedMafOutput"
+    },
+    filterredMaf: {
+        description: "maf file after filtering",
+        vidarr_label: "filterredMaf"
+    },
+    matchedFilterredMaf: {
+        description: "maf file after filtering for matched maf(maf file of matched tumor/normal version)",
+        vidarr_label: "matchedFilterredMaf"
     }
+}
   }
 
   output {
