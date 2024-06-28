@@ -224,7 +224,7 @@ workflow mutect2Consensus {
       matchedVepVcf: "vep vcf for matched samples",
       matchedVepVcfIndex: "vep vcf index for matched samples",
       filteredMaf: "maf file after filtering",
-      matchedfilteredMaf: "maf file after filtering for matched maf(maf file of matched tumor/normal version)"
+      matchedFilteredMaf: "maf file after filtering for matched maf(maf file of matched tumor/normal version)"
     }
   }
 
@@ -236,7 +236,7 @@ workflow mutect2Consensus {
     File matchedVepVcf = matchedVep.outputVcf
     File matchedVepVcfIndex = matchedVep.outputTbi
     File? filteredMaf = filterMaf.filteredMaf
-    File? matchedfilteredMaf = matchedFilterMaf.filteredMaf
+    File? matchedFilteredMaf = matchedFilterMaf.filteredMaf
   }
 }
 
