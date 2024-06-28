@@ -4,6 +4,7 @@
         "description": "runs the mutect2Consensus workflow with tumor/normal inputs",
         "arguments": {
             "mutect2Consensus.gatk": "4.1.6.0",
+            "mutect2Consensus.matchedMutect2.outputFileNamePrefix": null,
             "mutect2Consensus.annotation.jobMemory": null,
             "mutect2Consensus.annotation.modules": null,
             "mutect2Consensus.annotation.threads": null,
