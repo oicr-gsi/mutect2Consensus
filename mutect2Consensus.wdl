@@ -134,7 +134,8 @@ workflow mutect2Consensus {
           intervalFile = intervalFile,
           intervalsToParallelizeBy = inputIntervalsToParalellizeBy,
           reference = reference,
-          gatk = gatk
+          gatk = gatk,
+          outputFileNamePrefix = tumorName
       }
     }
     Array[File] matchedMutect2FilteredVcfFiles = matchedMutect2.filteredVcfFile
