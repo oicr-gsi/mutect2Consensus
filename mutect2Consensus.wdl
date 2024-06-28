@@ -39,7 +39,7 @@ workflow mutect2Consensus {
     inputIntervalsToParalellizeBy: "intervals for parallelization"
     tumorName: "Name of the tumor sample"
     normalName: "name of the normal sample"
-    reference: "reference version",
+    reference: "reference version"
     gatk: "gatk version to be used"
   }
 
@@ -105,7 +105,7 @@ workflow mutect2Consensus {
           tumorOnlyAlign_updateTagValue = true,
           vcf2maf_retainInfoProvided = true,
           targetBed = intervalFile,
-          tumorName = tumorName,
+          tumorName = getFileName.outputFileName,
           reference = reference
       }
     }
@@ -171,6 +171,7 @@ workflow mutect2Consensus {
         vcfIndex = matchedAnnotation.annotatedCombinedIndex,
         toMAF = true,
         onlyTumor = false,
+        tumorName = tumorName,
         normalName = normalName,
         tumorOnlyAlign_updateTagValue = true,
         vcf2maf_retainInfoProvided = true,
