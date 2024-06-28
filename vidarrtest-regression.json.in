@@ -58,6 +58,8 @@
             "mutect2Consensus.matchedMutect2.mergeVCFs_timeout": null,
             "mutect2Consensus.matchedMutect2.pon": null,
             "mutect2Consensus.matchedMutect2.ponIdx": null,
+            "mutect2Consensus.matchedMutect2.reference": "hg38",
+            "mutect2Consensus.matchedMutect2.gatk": "4.1.6.0",
             "mutect2Consensus.matchedMutect2.runMutect2_memory": null,
             "mutect2Consensus.matchedMutect2.runMutect2_mutect2ExtraArgs": null,
             "mutect2Consensus.matchedMutect2.runMutect2_mutectTag": null,
@@ -114,6 +116,7 @@
             "mutect2Consensus.matchedVep.vep_threads": null,
             "mutect2Consensus.matchedVep.vep_timeout": null,
             "mutect2Consensus.matchedVep.vep_vepStats": null,
+            "mutect2Consensus.matchedVep.reference": "hg38",
             "mutect2Consensus.mutect2.filter_filterExtraArgs": null,
             "mutect2Consensus.mutect2.filter_memory": null,
             "mutect2Consensus.mutect2.filter_timeout": null,
@@ -128,6 +131,8 @@
             "mutect2Consensus.mutect2.normalBam": null,
             "mutect2Consensus.mutect2.pon": null,
             "mutect2Consensus.mutect2.ponIdx": null,
+            "mutect2Consensus.mutect2.reference": "hg38",
+            "mutect2Consensus.mutect2.gatk": "4.1.6.0",
             "mutect2Consensus.mutect2.runMutect2_memory": null,
             "mutect2Consensus.mutect2.runMutect2_mutect2ExtraArgs": null,
             "mutect2Consensus.mutect2.runMutect2_mutectTag": null,
@@ -218,7 +223,6 @@
                 }
             },
             "mutect2Consensus.normalName": "TGL49_0214_Ly_R_TS_LIB-04-0590",
-            "mutect2Consensus.outputFileNamePrefix": "TGL49_0214",
             "mutect2Consensus.reference": "hg38",
             "mutect2Consensus.tumorInputGroup":{
                 "allUniqueBamAndIndex": {
@@ -347,70 +351,15 @@
             "mutect2Consensus.variantEffectPredictor.vep_species": null,
             "mutect2Consensus.variantEffectPredictor.vep_threads": null,
             "mutect2Consensus.variantEffectPredictor.vep_timeout": null,
-            "mutect2Consensus.variantEffectPredictor.vep_vepStats": null
+            "mutect2Consensus.variantEffectPredictor.vep_vepStats": null,
+            "mutect2Consensus.variantEffectPredictor.reference": "hg38"
         },
         "engineArguments": {
             "write_to_cache": false,
             "read_from_cache": false
           },
         "metadata": {
-            "mutect2Consensus.filterredMaf": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.matchedAllUniqueVcf": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.matchedAllUniqueVcfIndex": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.matchedDcsScVcf": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.matchedDcsScVcfIndex": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.matchedMafOutput": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.matchedSscsScVcf": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.matchedSscsScVcfIndex": {
+            "mutect2Consensus.filteredMaf": {
                 "contents": [
                     {
                         "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
@@ -434,63 +383,7 @@
                 ],
                 "type": "ALL"
             },
-            "mutect2Consensus.matchedFilterredMaf": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.normalAllUniqueVcf": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.normalAllUniqueVcfIndex": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.normalDcsScVcf": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.normalDcsScVcfIndex": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.normalMafOutput": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.normalSscsScVcf": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.normalSscsScVcfIndex": {
+            "mutect2Consensus.matchedFilteredMaf": {
                 "contents": [
                     {
                         "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
@@ -507,62 +400,6 @@
                 "type": "ALL"
             },
             "mutect2Consensus.normalVepVcfIndex": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.tumorAllUniqueVcf": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.tumorAllUniqueVcfIndex": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.tumorDcsScVcf": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.tumorDcsScVcfIndex": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.tumorMafOutput": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.tumorSscsScVcf": {
-                "contents": [
-                    {
-                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
-                    }
-                ],
-                "type": "ALL"
-            },
-            "mutect2Consensus.tumorSscsScVcfIndex": {
                 "contents": [
                     {
                         "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
