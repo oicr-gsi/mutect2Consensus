@@ -1,4 +1,16 @@
 version 1.0
+
+struct GenomeResources_vep{
+  String vep_modules
+  String vcf2maf_modules
+  String vepCacheDir
+  String referenceFasta
+  String species
+  String ncbiBuild
+  String vepPath
+}
+
+
 workflow variantEffectPredictor {
   input {
     Int mergeVcfs_timeout = 24
@@ -18,12 +30,6 @@ workflow variantEffectPredictor {
     Float vcf2maf_minHomVaf = 0.7
     Boolean vcf2maf_vepStats = true
     Boolean vcf2maf_retainInfoProvided = false
-    String vcf2maf_vepCacheDir
-    String vcf2maf_vepPath
-    String vcf2maf_ncbiBuild
-    String vcf2maf_referenceFasta
-    String vcf2maf_species = "homo_sapiens"
-    String vcf2maf_modules = "vcf2maf/1.6.21b tabix/0.2.6 hg38/p12 vep-hg38-cache/105"
     String vcf2maf_basename = basename("~{vcfFile}",".vcf.gz")
     Boolean tumorOnlyAlign_updateTagValue = false
     Int tumorOnlyAlign_timeout = 6
@@ -34,12 +40,7 @@ workflow variantEffectPredictor {
     Int vep_timeout = 16
     Int vep_threads = 4
     Int vep_jobMemory = 32
-    String vep_modules = "vep/105.0 tabix/0.2.6 vep-hg38-cache/105 hg38/p12"
-    String vep_referenceFasta
-    String vep_vepCacheDir
-    String vep_ncbiBuild
     Boolean vep_vepStats = true
-    String vep_species = "homo_sapiens"
     String? vep_addParam
     String vep_basename = basename("~{vcfFile}",".vcf.gz")
     Int subsetVcf_timeout = 6
@@ -65,7 +66,38 @@ workflow variantEffectPredictor {
     String? normalName
     Boolean toMAF
     Boolean onlyTumor
+    String reference
   }
+
+  Map[String,GenomeResources_vep] resources = {
+    "hg19": {
+       "vep_modules": "vep/105.0 tabix/0.2.6 vep-hg19-cache/105 hg19/p13",
+       "vcf2maf_modules": "vcf2maf/1.6.21b tabix/0.2.6 hg19/p13 vep-hg19-cache/105",
+       "vepCacheDir": "$VEP_HG19_CACHE_ROOT/.vep",
+       "referenceFasta": "$HG19_ROOT/hg19_random.fa",
+       "species": "homo_sapiens",
+       "ncbiBuild": "GRCh37",
+       "vepPath": "$VEP_ROOT/bin/"
+    },
+    "hg38":{
+       "vep_modules": "vep/105.0 tabix/0.2.6 vep-hg38-cache/105 hg38/p12",
+       "vcf2maf_modules": "vcf2maf/1.6.21b tabix/0.2.6 hg38/p12 vep-hg38-cache/105",
+       "vepCacheDir": "$VEP_HG38_CACHE_ROOT/.vep",
+       "referenceFasta": "$HG38_ROOT/hg38_random.fa",
+       "species": "homo_sapiens",
+       "ncbiBuild": "GRCh38",
+       "vepPath": "$VEP_ROOT/bin/"
+    },
+    "mm39":{
+       "vep_modules": "vep/105.0 tabix/0.2.6 vep-mm39-cache/105 mm39/p6",
+       "vcf2maf_modules": "vcf2maf/1.6.21b tabix/0.2.6 mm39/p6 vep-mm39-cache/105",
+       "vepCacheDir": "$VEP_MM39_CACHE_ROOT/.vep",
+       "referenceFasta": "$MM39_ROOT/mm39.fa",
+       "species": "mus_musculus",
+       "ncbiBuild": "GRCm39",
+       "vepPath": "$VEP_ROOT/bin/"
+    }
+  } 
 
   if (defined(targetBed) == true) {
     call targetBedTask {
@@ -127,28 +159,18 @@ workflow variantEffectPredictor {
 
     call vep {
       input: 
-    timeout = vep_timeout,
-    
-    threads = vep_threads,
-    
-    jobMemory = vep_jobMemory,
-    
-    modules = vep_modules,
-    
-    referenceFasta = vep_referenceFasta,
-    
-    vepCacheDir = vep_vepCacheDir,
-    
-    ncbiBuild = vep_ncbiBuild,
-    
-    vepStats = vep_vepStats,
-    
-    species = vep_species,
-    
-    addParam = vep_addParam,
-    
-    basename = vep_basename,
-    vcfFile = subsetVcf.subsetVcf
+        timeout = vep_timeout,
+        threads = vep_threads,
+        jobMemory = vep_jobMemory,
+        vepStats = vep_vepStats,
+        addParam = vep_addParam,
+        basename = vep_basename,
+        vcfFile = subsetVcf.subsetVcf,
+        modules = resources[reference].vep_modules,
+        vepCacheDir = resources[reference].vepCacheDir,
+        referenceFasta = resources[reference].referenceFasta,
+        species = resources[reference].species,
+        ncbiBuild = resources[reference].ncbiBuild
     }
 
     if (toMAF == true) {
@@ -186,21 +208,15 @@ workflow variantEffectPredictor {
              
              retainInfoProvided = vcf2maf_retainInfoProvided,
              
-             vepCacheDir = vcf2maf_vepCacheDir,
-             
-             vepPath = vcf2maf_vepPath,
-             
-             ncbiBuild = vcf2maf_ncbiBuild,
-             
-             referenceFasta = vcf2maf_referenceFasta,
-             
-             species = vcf2maf_species,
-             
-             modules = vcf2maf_modules,
-             
              basename = vcf2maf_basename,
              vcfFile = select_first([tumorOnlyAlign.unmatchedOutputVcf,subsetVcf.subsetVcf]),
-             tumorNormalNames = select_first([getSampleNames.tumorNormalNames])
+             tumorNormalNames = select_first([getSampleNames.tumorNormalNames]),
+             vepCacheDir = resources[reference].vepCacheDir,
+             modules = resources[reference].vcf2maf_modules,
+             referenceFasta = resources[reference].referenceFasta,
+             species = resources[reference].species,
+             ncbiBuild = resources[reference].ncbiBuild,
+             vepPath = resources[reference].vepPath
         }
       }
   }
@@ -254,12 +270,6 @@ workflow variantEffectPredictor {
       vcf2maf_minHomVaf: "The minimum vaf for homozygous calls"
       vcf2maf_vepStats: "If vepStats is true, remove flag '--no_stats' from vep. If vepStats is false, running vep with flag '--no_stats'"
       vcf2maf_retainInfoProvided: "Comma-delimited names of INFO fields to retain as extra columns in MAF"
-      vcf2maf_vepCacheDir: "Directory of vep cache files"
-      vcf2maf_vepPath: "Path to vep script"
-      vcf2maf_ncbiBuild: "The assembly version"
-      vcf2maf_referenceFasta: "Reference fasta file"
-      vcf2maf_species: "Species name"
-      vcf2maf_modules: "Required environment modules"
       vcf2maf_basename: "Base name"
       tumorOnlyAlign_updateTagValue: "If true, update tag values in vcf header for CC workflow"
       tumorOnlyAlign_timeout: "Hours before task timeout"
@@ -270,12 +280,7 @@ workflow variantEffectPredictor {
       vep_timeout: "Hours before task timeout"
       vep_threads: "Requested CPU threads"
       vep_jobMemory: "Memory allocated for this job (GB)"
-      vep_modules: "Required environment modules"
-      vep_referenceFasta: "Reference fasta file"
-      vep_vepCacheDir: "Directory of cache files"
-      vep_ncbiBuild: "The assembly version"
       vep_vepStats: "If vepStats is true, remove flag '--no_stats' from vep. If vepStats is false, running vep with flag '--no_stats'"
-      vep_species: "Species name"
       vep_addParam: "Additional vep parameters"
       vep_basename: "Base name"
       subsetVcf_timeout: "Maximum amount of time (in hours) the task can run for."
@@ -301,6 +306,7 @@ workflow variantEffectPredictor {
     targetBed: "Target bed file"
     toMAF: "If true, generate the MAF file"
     onlyTumor: "If true, run tumor only mode"
+    reference: "reference genome for input sample"
   }
 
   meta {

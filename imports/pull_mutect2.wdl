@@ -1,31 +1,26 @@
 version 1.0
 
+struct GenomeResources_mutect2 {
+    String refDict
+    String refFai
+    String refFasta
+    String modules
+}
+
 workflow mutect2 {
   input {
     Int filter_timeout = 12
     Int filter_memory = 16
     String? filter_filterExtraArgs
-    String filter_refDict = "$HG19_ROOT/hg19_random.dict"
-    String filter_refFai = "$HG19_ROOT/hg19_random.fa.fai"
-    String filter_refFasta = "$HG19_ROOT/hg19_random.fa"
-    String filter_modules = "gatk/4.1.6.0 hg19/p13 samtools/1.9"
     Int mergeStats_timeout = 5
     Int mergeStats_memory = 4
-    String mergeStats_modules = "gatk/4.1.6.0"
     Int mergeVCFs_timeout = 12
     Int mergeVCFs_memory = 4
-    String mergeVCFs_refFasta = "$HG19_ROOT/hg19_random.fa"
-    String mergeVCFs_modules = "gatk/4.1.6.0 hg19/p13"
     Int runMutect2_timeout = 24
     Int runMutect2_memory = 32
     Int runMutect2_threads = 4
     String? runMutect2_mutect2ExtraArgs
     String runMutect2_mutectTag = "mutect2"
-    String runMutect2_refDict = "$HG19_ROOT/hg19_random.dict"
-    String runMutect2_refFai = "$HG19_ROOT/hg19_random.fa.fai"
-    String runMutect2_refFasta = "$HG19_ROOT/hg19_random.fa"
-    String runMutect2_modules = "gatk/4.1.6.0 hg19/p13"
-    String splitStringToArray_modules = ""
     Int splitStringToArray_timeout = 1
     Int splitStringToArray_memory = 1
     String splitStringToArray_lineSeparator = ","
@@ -39,46 +34,40 @@ workflow mutect2 {
     File? ponIdx
     File? gnomad
     File? gnomadIdx
+    String reference
+    String gatk
+    String outputFileNamePrefix
   }
 
   parameter_meta {
-    filter_timeout: "Hours before task timeout"
-    filter_memory: "Memory allocated for job"
-    filter_filterExtraArgs: "Extra arguments"
-    filter_refDict: "path to reference dictionary"
-    filter_refFai: "path to fasta index"
-    filter_refFasta: "path to reference fasta"
-    filter_modules: "Names and versions of modules to load"
-    mergeStats_timeout: "Hours before task timeout"
-    mergeStats_memory: "Memory allocated for job"
-    mergeStats_modules: "Names and versions of modules to load"
-    mergeVCFs_timeout: "Hours before task timeout"
-    mergeVCFs_memory: "Memory allocated for job"
-    mergeVCFs_refFasta: "path to reference fasta"
-    mergeVCFs_modules: "Environment module names and version to load (space separated) before command execution"
-    runMutect2_timeout: "Hours before task timeout"
-    runMutect2_memory: "Memory allocated for job"
-    runMutect2_threads: "Number of threads to request"
-    runMutect2_mutect2ExtraArgs: "Extra arguments"
-    runMutect2_mutectTag: "Tag"
-    runMutect2_refDict: "path to reference dictionary"
-    runMutect2_refFai: "path to fasta index"
-    runMutect2_refFasta: "path to reference fasta"
-    runMutect2_modules: "Names and versions of modules to load"
-    splitStringToArray_modules: "Names and versions of modules to load"
-    splitStringToArray_timeout: "Hours before task timeout"
-    splitStringToArray_memory: "Memory allocated for job"
-    splitStringToArray_lineSeparator: "line separator"
-    tumorBam: "Input tumor file (bam or sam)"
-    tumorBai: "Index file for tumor bam"
-    normalBam: "Input normal file (bam or sam)"
-    normalBai: "Index file for normal bam"
-    intervalFile: "interval file"
-    intervalsToParallelizeBy: "intervals to parallelize by"
-    pon: "pon"
-    ponIdx: "pon ID"
-    gnomad: "gnomad"
-    gnomadIdx: "gnomad ID"
+      filter_timeout: "Hours before task timeout"
+      filter_memory: "Memory allocated for job"
+      filter_filterExtraArgs: "placehoulder for extra arguments"
+      mergeStats_timeout: "Hours before task timeout"
+      mergeStats_memory: "Memory allocated for job"
+      mergeVCFs_timeout: "Hours before task timeout"
+      mergeVCFs_memory: "Memory allocated for job"
+      runMutect2_timeout: "Maximum amount of time (in hours) the task can run for."
+      runMutect2_memory: "Memory allocated to job (in GB)."
+      runMutect2_threads: "Requested CPU threads"
+      runMutect2_mutect2ExtraArgs: "placehoulder for extra arguments"
+      runMutect2_mutectTag: "version tag for mutect"
+      splitStringToArray_timeout: "Maximum amount of time (in hours) the task can run for."
+      splitStringToArray_memory: "Memory allocated to job (in GB)"
+      splitStringToArray_lineSeparator: "Interval group separator - these are the intervals to split by."
+    tumorBam: "Input tumor file (bam or sam)."
+    tumorBai: "Index for tumorBam"
+    normalBam: "Input normal file (bam or sam)."
+    normalBai: "Index for noramlBam"
+    intervalFile: "One or more genomic intervals over which to operate"
+    intervalsToParallelizeBy: "Comma separated list of intervals to split by (e.g. chr1,chr2,chr3+chr4)"
+    pon: "panel of normal"
+    ponIdx: "index of pon"
+    gnomad: "Genome Aggregation Database"
+    gnomadIdx: "Index of gnomad"
+    gatk: "gatk version to be used"
+    reference: "the reference genome for input sample"
+    outputFileNamePrefix: "prefix of output file"
   }
 
   meta {
@@ -87,25 +76,48 @@ workflow mutect2 {
     description: "Somatic short variant analysis."
     dependencies: [
     {
-      name: "gatk/4.1.1.0",
-      url: "https://software.broadinstitute.org/gatk/download/index"
-    },
-    {
       name: "samtools/1.9",
       url: "https://github.com/samtools/samtools/archive/0.1.19.tar.gz"
     }]
+    output_meta: {
+      filteredVcfFile: "the filtered vcf file",
+      filteredVcfIndex: "Index of filtered vcf file",
+      mergedUnfilteredStats: "Stats for merged unfiltered files",
+      filteringStats: "Stats for filtering process"
+    }
   }
+
+Map[String, GenomeResources_mutect2] resources = {
+  "hg19": {
+        "refDict" : "$HG19_ROOT/hg19_random.dict",
+    		"refFai" : "$HG19_ROOT/hg19_random.fa.fai",
+    		"refFasta" : "$HG19_ROOT/hg19_random.fa",
+    		"modules" : "hg19/p13 samtools/1.9"
+  },
+  "hg38": {
+        "refDict" : "$HG38_ROOT/hg38_random.dict",
+    		"refFai" : "$HG38_ROOT/hg38_random.fa.fai",
+    		"refFasta" : "$HG38_ROOT/hg38_random.fa",
+    		"modules" : "hg38/p12 samtools/1.9"
+  },
+  "mm10": {
+        "refDict" : "$MM10_ROOT/mm10.dict",
+        "refFai" : "$MM10_ROOT/mm10.fa.fai",
+        "refFasta" : "$MM10_ROOT/mm10.fa",
+        "modules" : "mm10/p6 samtools/1.9"
+  }
+
+}
 
   call splitStringToArray {
     input:
-      modules = splitStringToArray_modules,
       timeout = splitStringToArray_timeout,
       memory = splitStringToArray_memory,
       lineSeparator = splitStringToArray_lineSeparator,
       intervalsToParallelizeBy = intervalsToParallelizeBy
   }
 
-  String outputBasename = basename(tumorBam, '.bam')
+  String outputBasename = outputFileNamePrefix
   Boolean intervalsProvided = if (defined(intervalsToParallelizeBy)) then true else false
 
   scatter(subintervals in splitStringToArray.out) {
@@ -116,10 +128,6 @@ workflow mutect2 {
         threads = runMutect2_threads,
         mutect2ExtraArgs = runMutect2_mutect2ExtraArgs,
         mutectTag = runMutect2_mutectTag,
-        refDict = runMutect2_refDict,
-        refFai = runMutect2_refFai,
-        refFasta = runMutect2_refFasta,
-        modules = runMutect2_modules,
         intervals = subintervals,
         intervalsProvided = intervalsProvided,
         intervalFile = intervalFile,
@@ -131,7 +139,12 @@ workflow mutect2 {
         ponIdx = ponIdx,
         gnomad = gnomad,
         gnomadIdx = gnomadIdx,
-        outputBasename = outputBasename
+        outputBasename = outputBasename,
+        modules = resources [ reference ].modules + ' ' + gatk,
+        refFai = resources[reference].refFai,
+        refFasta = resources[reference].refFasta,
+        refDict = resources[reference].refDict
+
     }
   }
 
@@ -143,18 +156,18 @@ workflow mutect2 {
     input:
       timeout = mergeVCFs_timeout,
       memory = mergeVCFs_memory,
-      refFasta = mergeVCFs_refFasta,
-      modules = mergeVCFs_modules,
       vcfs = unfilteredVcfs,
-      vcfIndices = unfilteredVcfIndices
+      vcfIndices = unfilteredVcfIndices,
+      modules = resources [ reference ].modules + ' ' + gatk,
+      refFasta = resources[reference].refFasta
   }
 
   call mergeStats {
     input:
       timeout = mergeStats_timeout,
       memory = mergeStats_memory,
-      modules = mergeStats_modules,
-      stats = unfilteredStats
+      stats = unfilteredStats,
+      modules = resources [ reference ].modules + ' ' + gatk,
   }
 
   call filter {
@@ -162,20 +175,18 @@ workflow mutect2 {
       timeout = filter_timeout,
       memory = filter_memory,
       filterExtraArgs = filter_filterExtraArgs,
-      refDict = filter_refDict,
-      refFai = filter_refFai,
-      refFasta = filter_refFasta,
-      modules = filter_modules,
       intervalFile = intervalFile,
       unfilteredVcf = mergeVCFs.mergedVcf,
       unfilteredVcfIdx = mergeVCFs.mergedVcfIdx,
-      mutectStats = mergeStats.mergedStats
+      mutectStats = mergeStats.mergedStats,
+      modules = resources [ reference ].modules + ' ' + gatk,
+      refFasta = resources[reference].refFasta,
+      refDict = resources[reference].refDict,
+      refFai = resources[reference].refFai
   }
 
 
   output {
-    File unfilteredVcfFile = filter.unfilteredVcfGz
-    File unfilteredVcfIndex = filter.unfilteredVcfTbi
     File filteredVcfFile = filter.filteredVcfGz
     File filteredVcfIndex = filter.filteredVcfTbi
     File mergedUnfilteredStats = mergeStats.mergedStats
@@ -189,7 +200,11 @@ task splitStringToArray {
     String lineSeparator = ","
     Int memory = 1
     Int timeout = 1
-    String modules = ""
+  }
+  parameter_meta {
+    lineSeparator: "Interval group separator - these are the intervals to split by."
+    memory: "Memory allocated to job (in GB)"
+    timeout: "Maximum amount of time (in hours) the task can run for."
   }
 
   command <<<
@@ -203,10 +218,10 @@ task splitStringToArray {
 
 task runMutect2 {
   input {
-    String modules = "gatk/4.1.6.0 hg19/p13"
-    String refFasta = "$HG19_ROOT/hg19_random.fa"
-    String refFai = "$HG19_ROOT/hg19_random.fa.fai"
-    String refDict = "$HG19_ROOT/hg19_random.dict"
+    String modules
+    String refFasta
+    String refFai
+    String refDict 
     String mutectTag = "mutect2"
     String? intervalFile
     Array[String]? intervals
@@ -224,6 +239,14 @@ task runMutect2 {
     Int threads = 4
     Int memory = 32
     Int timeout = 24
+  }
+
+  parameter_meta {
+    mutectTag: "version tag for mutect"
+    mutect2ExtraArgs: "placehoulder for extra arguments"
+    threads: "Requested CPU threads"
+    memory: "Memory allocated to job (in GB)."
+    timeout: "Maximum amount of time (in hours) the task can run for."
   }
 
   String outputVcf = if (defined(normalBam)) then outputBasename + "." + mutectTag + ".vcf" else outputBasename + "." + mutectTag + ".tumor_only.vcf"
@@ -285,8 +308,8 @@ task runMutect2 {
 
 task mergeVCFs {
   input {
-    String modules = "gatk/4.1.6.0 hg19/p13"
-    String refFasta = "$HG19_ROOT/hg19_random.fa"
+    String modules
+    String refFasta
     Array[File] vcfs
     Array[File] vcfIndices
     Int memory = 4
@@ -331,10 +354,15 @@ task mergeVCFs {
 
 task mergeStats {
   input {
-    String modules = "gatk/4.1.6.0"
+    String modules
     Array[File]+ stats
     Int memory = 4
     Int timeout = 5
+  }
+
+  parameter_meta {
+    memory: "Memory allocated for job"
+    timeout: "Hours before task timeout"
   }
 
   String outputStats = basename(stats[0])
@@ -360,10 +388,10 @@ task mergeStats {
 
 task filter {
   input {
-    String modules = "gatk/4.1.6.0 hg19/p13 samtools/1.9"
-    String refFasta = "$HG19_ROOT/hg19_random.fa"
-    String refFai = "$HG19_ROOT/hg19_random.fa.fai"
-    String refDict = "$HG19_ROOT/hg19_random.dict"
+    String modules
+    String refFasta
+    String refFai
+    String refDict
     String? intervalFile
     File unfilteredVcf
     File unfilteredVcfIdx
@@ -371,6 +399,12 @@ task filter {
     String? filterExtraArgs
     Int memory = 16
     Int timeout = 12
+  }
+
+  parameter_meta {
+    memory: "Memory allocated for job"
+    timeout: "Hours before task timeout"
+    filterExtraArgs: "placehoulder for extra arguments"
   }
 
   String unfilteredVcfName = basename(unfilteredVcf)
