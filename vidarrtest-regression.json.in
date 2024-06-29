@@ -88,8 +88,8 @@
             "mutect2Consensus.matchedVep.mergeVcfs_overhead": null,
             "mutect2Consensus.matchedVep.mergeVcfs_threads": null,
             "mutect2Consensus.matchedVep.mergeVcfs_timeout": null,
-            "mutect2Consensus.matchedVep.normalName": "TGL49_0214_Ly_R_TS_LIB-04-0590",
-            "mutect2Consensus.matchedVep.tumorName": "TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1",
+            "mutect2Consensus.matchedVep.normalName": null,
+            "mutect2Consensus.matchedVep.tumorName": null,
             "mutect2Consensus.matchedVep.subsetVcf_basename": null,
             "mutect2Consensus.matchedVep.subsetVcf_jobMemory": null,
             "mutect2Consensus.matchedVep.subsetVcf_modules": null,
@@ -309,7 +309,7 @@
                     }
                 }
             },
-            "mutect2Consensus.tumorName": "TGL49_0214_Cf_n_TS",
+            "mutect2Consensus.tumorName": "TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1",
             "mutect2Consensus.variantEffectPredictor.chromosomeArray_jobMemory": null,
             "mutect2Consensus.variantEffectPredictor.chromosomeArray_threads": null,
             "mutect2Consensus.variantEffectPredictor.chromosomeArray_timeout": null,
