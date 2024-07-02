@@ -210,62 +210,62 @@ Parameter|Value|Default|Description
 
 Output | Type | Description
 ---|---|---
-`tumorVepVcf`|File|vep vcf for tumor sample
-`tumorVepVcfIndex`|File|vep vcf index for tumor sample
-`normalVepVcf`|File|vep vcf for normal sample
-`normalVepVcfIndex`|File|vep vcf index for normal sample
-`matchedVepVcf`|File|vep vcf for matched samples
-`matchedVepVcfIndex`|File|vep vcf index for matched samples
-`filteredMaf`|File?|maf file after filtering
-`matchedFilteredMaf`|File?|maf file after filtering for matched maf(maf file of matched tumor/normal version)
+`tumorVepVcf`|File|{'description': 'vep vcf for tumor sample', 'vidarr_label': 'tumorVepVcf'}
+`tumorVepVcfIndex`|File|{'description': 'vep vcf index for tumor sample', 'vidarr_label': 'tumorVepVcfIndex'}
+`normalVepVcf`|File|{'description': 'vep vcf for normal sample', 'vidarr_label': 'normalVepVcf'}
+`normalVepVcfIndex`|File|{'description': 'vep vcf index for normal sample', 'vidarr_label': 'normalVepVcfIndex'}
+`matchedVepVcf`|File|{'description': 'vep vcf for matched samples', 'vidarr_label': 'matchedVepVcf'}
+`matchedVepVcfIndex`|File|{'description': 'vep vcf index for matched samples', 'vidarr_label': 'matchedVepVcfIndex'}
+`filteredMaf`|File?|{'description': 'maf file after filtering', 'vidarr_label': 'filterredMaf'}
+`matchedFilteredMaf`|File?|{'description': 'maf file after filtering for matched maf(maf file of matched tumor/normal version)', 'vidarr_label': 'matchedFilterredMaf'}
 
 
 ## Commands
- This section lists command(s) run by mutect2Consensus workflow
+  This section lists command(s) run by mutect2Consensus workflow
+  
+  * Running mutect2Consensus
+  
+  ```
+     python3<<CODE
+     import subprocess
+     import sys
+     inputStrings = []
+     v = "~{sep=' ' inputVcfs}"
+     vcfFiles = v.split()
+     w = "~{sep=' ' workflows}"
+     workflowIds = w.split()
+     priority = "~{priority}"
+     
+     if len(vcfFiles) != len(workflowIds):
+         print("The arrays with input files and their respective workflow names are not of equal size!")
+     else:
+         for f in range(0, len(vcfFiles)):
+             inputStrings.append("--variant:" + workflowIds[f] + " " + vcfFiles[f])
+   
+     javaMemory = ~{jobMemory} - 6 
+     gatkCommand  = "$JAVA_ROOT/bin/java -Xmx" + str(javaMemory) + "G -jar $GATK_ROOT/GenomeAnalysisTK.jar "
+     gatkCommand += "-T CombineVariants "
+     gatkCommand += " ".join(inputStrings)
+     gatkCommand += " -R ~{referenceFasta} "
+     gatkCommand += "-o ~{outputPrefix}_combined.vcf.gz "
+     gatkCommand += "-genotypeMergeOptions PRIORITIZE "
+     gatkCommand += "-priority " + priority
+     gatkCommand += " 2>&1"
+   
+     result_output = subprocess.run(gatkCommand, shell=True)
+     sys.exit(result_output.returncode)
+     CODE
+   ```
  
- * Running mutect2Consensus
- 
- ```
-    python3<<CODE
-    import subprocess
-    import sys
-    inputStrings = []
-    v = "~{sep=' ' inputVcfs}"
-    vcfFiles = v.split()
-    w = "~{sep=' ' workflows}"
-    workflowIds = w.split()
-    priority = "~{priority}"
-    
-    if len(vcfFiles) != len(workflowIds):
-        print("The arrays with input files and their respective workflow names are not of equal size!")
-    else:
-        for f in range(0, len(vcfFiles)):
-            inputStrings.append("--variant:" + workflowIds[f] + " " + vcfFiles[f])
-  
-    javaMemory = ~{jobMemory} - 6 
-    gatkCommand  = "$JAVA_ROOT/bin/java -Xmx" + str(javaMemory) + "G -jar $GATK_ROOT/GenomeAnalysisTK.jar "
-    gatkCommand += "-T CombineVariants "
-    gatkCommand += " ".join(inputStrings)
-    gatkCommand += " -R ~{referenceFasta} "
-    gatkCommand += "-o ~{outputPrefix}_combined.vcf.gz "
-    gatkCommand += "-genotypeMergeOptions PRIORITIZE "
-    gatkCommand += "-priority " + priority
-    gatkCommand += " 2>&1"
-  
-    result_output = subprocess.run(gatkCommand, shell=True)
-    sys.exit(result_output.returncode)
-    CODE
-  ```
-
-  ```
-  
-    bcftools annotate -a ~{uniqueVcf} \
-   -c FMT/AD,FMT/DP ~{mergedVcf} -Oz \
-   -o "~{outputPrefix}.merged.vcf.gz"
-  
-   tabix -p vcf "~{outputPrefix}.merged.vcf.gz"
-  ```
-   ## Support
+   ```
+   
+     bcftools annotate -a ~{uniqueVcf} \
+    -c FMT/AD,FMT/DP ~{mergedVcf} -Oz \
+    -o "~{outputPrefix}.merged.vcf.gz"
+   
+    tabix -p vcf "~{outputPrefix}.merged.vcf.gz"
+   ```
+ ## Support
 
 For support, please file an issue on the [Github project](https://github.com/oicr-gsi) or send an email to gsi@oicr.on.ca .
 

@@ -210,14 +210,38 @@ workflow mutect2Consensus {
      }
     ]
     output_meta: {
-      tumorVepVcf: "vep vcf for tumor sample",
-      tumorVepVcfIndex: "vep vcf index for tumor sample",
-      normalVepVcf: "vep vcf for normal sample",
-      normalVepVcfIndex: "vep vcf index for normal sample",
-      matchedVepVcf: "vep vcf for matched samples",
-      matchedVepVcfIndex: "vep vcf index for matched samples",
-      filteredMaf: "maf file after filtering",
-      matchedFilteredMaf: "maf file after filtering for matched maf(maf file of matched tumor/normal version)"
+      tumorVepVcf: {
+          description: "vep vcf for tumor sample",
+          vidarr_label: "tumorVepVcf"
+      },
+      tumorVepVcfIndex: {
+          description: "vep vcf index for tumor sample",
+          vidarr_label: "tumorVepVcfIndex"
+      },
+      normalVepVcf: {
+          description: "vep vcf for normal sample",
+          vidarr_label: "normalVepVcf"
+      },
+      normalVepVcfIndex: {
+          description: "vep vcf index for normal sample",
+          vidarr_label: "normalVepVcfIndex"
+      },
+      matchedVepVcf: {
+          description: "vep vcf for matched samples",
+          vidarr_label: "matchedVepVcf"
+      },
+      matchedVepVcfIndex: {
+          description: "vep vcf index for matched samples",
+          vidarr_label: "matchedVepVcfIndex"
+      },
+      filteredMaf: {
+          description: "maf file after filtering",
+          vidarr_label: "filterredMaf"
+      },
+      matchedFilteredMaf: {
+          description: "maf file after filtering for matched maf(maf file of matched tumor/normal version)",
+          vidarr_label: "matchedFilterredMaf"
+      }
     }
   }
 
