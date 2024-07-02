@@ -22,12 +22,6 @@
             "mutect2Consensus.filterMaf.timeout": null,
             "mutect2Consensus.filterMaf.freqList": "$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt",
             "mutect2Consensus.filterMaf.genesToKeep": "$MAF_FILTERING_ROOT/genes_to_keep.txt",
-            "mutect2Consensus.getFileName.jobMemory": 4,
-            "mutect2Consensus.getFileName.timeout": 1,
-            "mutect2Consensus.getFileName.threads": 1,
-            "mutect2Consensus.matched_getFileName.jobMemory": 4,
-            "mutect2Consensus.matched_getFileName.timeout": 1,
-            "mutect2Consensus.matched_getFileName.threads": 1,
             "mutect2Consensus.matchedFilterMaf.jobMemory": null,
             "mutect2Consensus.matchedFilterMaf.modules": null,
             "mutect2Consensus.matchedFilterMaf.threads": null,
@@ -148,6 +142,7 @@
             "mutect2Consensus.mutect2.splitStringToArray_modules": null,
             "mutect2Consensus.mutect2.splitStringToArray_timeout": null,
             "mutect2Consensus.normalInputGroup": {
+                "outputFileNamePrefix": "TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B",
                 "allUniqueBamAndIndex": {
                     "bam": {
                         "contents": {
@@ -230,6 +225,7 @@
             "mutect2Consensus.normalName": "TGL49_0214_Ly_R_TS_LIB-04-0590",
             "mutect2Consensus.reference": "hg38",
             "mutect2Consensus.tumorInputGroup":{
+                "outputFileNamePrefix": "TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1",
                 "allUniqueBamAndIndex": {
                     "bam": {
                         "contents": {

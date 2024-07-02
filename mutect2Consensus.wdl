@@ -131,23 +131,18 @@ workflow mutect2Consensus {
         intervalsToParallelizeBy = inputIntervalsToParalellizeBy,
         reference = reference,
         gatk = gatk,
-        outputFileNamePrefix = tumorName
+        outputFileNamePrefix = tumorName + "_matched"
     }
   }
   Array[File] matchedMutect2FilteredVcfFiles = matchedMutect2.filteredVcfFile
   Array[File] matchedMutect2FilteredVcfIndexes = matchedMutect2.filteredVcfIndex
-
-  call getFileName as matched_getFileName{
-    input:
-    fileName = matchedMutect2FilteredVcfFiles[0]
-  }
   
   call combineVariants as matchedCombineVariants {
     input: 
       inputVcfs = [matchedMutect2FilteredVcfFiles[0],matchedMutect2FilteredVcfFiles[1]],
       inputIndexes = [matchedMutect2FilteredVcfIndexes[0],matchedMutect2FilteredVcfIndexes[1]],
       priority = "mutect2-dcsSc,mutect2-sscsSc",
-      outputPrefix = matched_getFileName.outputFileName + "_matched",
+      outputPrefix = tumorName + "_matched",
       referenceFasta = resources[reference].inputRefFasta,
       modules = resources[reference].combineVariants_modules
   }
@@ -158,7 +153,7 @@ workflow mutect2Consensus {
       uniqueVcfIndex = matchedMutect2FilteredVcfIndexes[2],
       mergedVcf = matchedCombineVariants.combinedVcf,
       mergedVcfIndex = matchedCombineVariants.combinedIndex,
-      outputPrefix = matched_getFileName.outputFileName + "_matched"
+      outputPrefix = tumorName + "_matched"
   }
 
   call vep.variantEffectPredictor as matchedVep{

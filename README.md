@@ -36,10 +36,7 @@ Parameter|Value|Description
 `reference`|String|reference version
 `gatk`|String|gatk version to be used
 `combineVariants.workflows`|Array[String]|array of ids of producer workflows
-`matchedMutect2.outputFileNamePrefix`|String|prefix of output file
 `matchedCombineVariants.workflows`|Array[String]|array of ids of producer workflows
-`matchedVep.tumorName`|String|Name of the tumor sample
-`matchedVep.reference`|String|reference genome for input sample
 
 
 #### Optional workflow parameters:
@@ -71,9 +68,6 @@ Parameter|Value|Default|Description
 `mutect2.ponIdx`|File?|None|index of pon
 `mutect2.gnomad`|File?|None|Genome Aggregation Database
 `mutect2.gnomadIdx`|File?|None|Index of gnomad
-`getFileName.jobMemory`|Int|4|memory allocated to preprocessing, in GB
-`getFileName.timeout`|Int|1|timeout in hours
-`getFileName.threads`|Int|1|number of cpu threads to be used
 `combineVariants.jobMemory`|Int|24|memory allocated to preprocessing, in GB
 `combineVariants.timeout`|Int|20|timeout in hours
 `combineVariants.threads`|Int|8|number of cpu threads to be used
@@ -151,9 +145,6 @@ Parameter|Value|Default|Description
 `matchedMutect2.ponIdx`|File?|None|index of pon
 `matchedMutect2.gnomad`|File?|None|Genome Aggregation Database
 `matchedMutect2.gnomadIdx`|File?|None|Index of gnomad
-`matched_getFileName.jobMemory`|Int|4|memory allocated to preprocessing, in GB
-`matched_getFileName.timeout`|Int|1|timeout in hours
-`matched_getFileName.threads`|Int|1|number of cpu threads to be used
 `matchedCombineVariants.jobMemory`|Int|24|memory allocated to preprocessing, in GB
 `matchedCombineVariants.timeout`|Int|20|timeout in hours
 `matchedCombineVariants.threads`|Int|8|number of cpu threads to be used
@@ -226,7 +217,7 @@ Output | Type | Description
 `matchedVepVcf`|File|vep vcf for matched samples
 `matchedVepVcfIndex`|File|vep vcf index for matched samples
 `filteredMaf`|File?|maf file after filtering
-`matchedfilteredMaf`|File?|maf file after filtering for matched maf(maf file of matched tumor/normal version)
+`matchedFilteredMaf`|File?|maf file after filtering for matched maf(maf file of matched tumor/normal version)
 
 
 ## Commands
@@ -235,8 +226,6 @@ Output | Type | Description
  * Running mutect2Consensus
  
  ```
-  
-  ```
     python3<<CODE
     import subprocess
     import sys
@@ -267,7 +256,7 @@ Output | Type | Description
     sys.exit(result_output.returncode)
     CODE
   ```
-  ```
+
   ```
   
     bcftools annotate -a ~{uniqueVcf} \
