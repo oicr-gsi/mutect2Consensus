@@ -10,6 +10,7 @@ struct BamAndBamIndex {
 }
 
 struct InputGroup {
+  String outputFileNamePrefix
   BamAndBamIndex dcsScBamAndIndex
   BamAndBamIndex sscsScBamAndIndex
   BamAndBamIndex allUniqueBamAndIndex
@@ -55,12 +56,7 @@ workflow mutect2Consensus {
   }
 
   Array[InputGroup] inputGroups = [ tumorInputGroup, normalInputGroup ]
-  scatter (ig in inputGroups) {
-    call getFileName{
-        input:
-          fileName = ig.allUniqueBamAndIndex.bam
-    }
-    
+  scatter (ig in inputGroups) { 
     Array[BamAndBamIndex]partitionedBams = [ig.dcsScBamAndIndex, ig.sscsScBamAndIndex, ig.allUniqueBamAndIndex]
     scatter ( bamAndIndex in partitionedBams ) {
       call mutect2.mutect2 {
@@ -71,7 +67,7 @@ workflow mutect2Consensus {
           intervalsToParallelizeBy = inputIntervalsToParalellizeBy,
           reference = reference,
           gatk = gatk,
-          outputFileNamePrefix = getFileName.outputFileName
+          outputFileNamePrefix = ig.outputFileNamePrefix
       }
     }
     Array[File] mutect2FilteredVcfFiles = mutect2.filteredVcfFile
@@ -82,7 +78,7 @@ workflow mutect2Consensus {
         inputVcfs = [mutect2FilteredVcfFiles[0],mutect2FilteredVcfFiles[1]],
         inputIndexes = [mutect2FilteredVcfIndexes[0],mutect2FilteredVcfIndexes[1]],
         priority = "mutect2-dcsSc,mutect2-sscsSc",
-        outputPrefix = getFileName.outputFileName,
+        outputPrefix = ig.outputFileNamePrefix,
         referenceFasta = resources[reference].inputRefFasta,
         modules = resources[reference].combineVariants_modules
     }
@@ -93,7 +89,7 @@ workflow mutect2Consensus {
         uniqueVcfIndex = mutect2FilteredVcfIndexes[2],
         mergedVcf = combineVariants.combinedVcf,
         mergedVcfIndex = combineVariants.combinedIndex,
-        outputPrefix = getFileName.outputFileName
+        outputPrefix = ig.outputFileNamePrefix
     }
 
     call vep.variantEffectPredictor {
@@ -105,7 +101,7 @@ workflow mutect2Consensus {
         tumorOnlyAlign_updateTagValue = true,
         vcf2maf_retainInfoProvided = true,
         targetBed = intervalFile,
-        tumorName = getFileName.outputFileName,
+        tumorName = ig.outputFileNamePrefix,
         reference = reference
     }
   }
@@ -239,36 +235,6 @@ workflow mutect2Consensus {
     File matchedVepVcfIndex = matchedVep.outputTbi
     File? filteredMaf = filterMaf.filteredMaf
     File? matchedFilteredMaf = matchedFilterMaf.filteredMaf
-  }
-}
-
-task getFileName {
-  input {
-    File fileName
-    Int jobMemory = 4
-    Int timeout = 1
-    Int threads = 1
-  }
-
-  parameter_meta {
-    fileName: "the file to get basename with"
-    jobMemory: "memory allocated to preprocessing, in GB"
-    timeout: "timeout in hours"
-    threads: "number of cpu threads to be used"
-    }
-
-  command <<<
-    basename ~{fileName} | cut -d. -f1 
-  >>>
-
-  output {
-    String outputFileName = read_string(stdout())
-  }
-
-  runtime {
-    memory:  "~{jobMemory} GB"
-    cpu:     "~{threads}"
-    timeout: "~{timeout}"
   }
 }
 
