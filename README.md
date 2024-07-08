@@ -29,12 +29,12 @@ Parameter|Value|Description
 ---|---|---
 `tumorInputGroup`|InputGroup|partitioned bam files from umiConsensus outputs for tumor sample
 `normalInputGroup`|InputGroup|partitioned bam files from umiConsensus outputs for normal sample
-`outputFileNamePrefix`|String|Prefix to use for output file
 `intervalFile`|String|interval file to subset variant calls
 `inputIntervalsToParalellizeBy`|String|intervals for parallelization
 `tumorName`|String|Name of the tumor sample
 `normalName`|String|name of the normal sample
 `reference`|String|reference version
+`gatk`|String|gatk version to be used
 `combineVariants.workflows`|Array[String]|array of ids of producer workflows
 `matchedCombineVariants.workflows`|Array[String]|array of ids of producer workflows
 
@@ -49,27 +49,25 @@ Parameter|Value|Default|Description
 ---|---|---|---
 `mutect2.filter_timeout`|Int|12|Hours before task timeout
 `mutect2.filter_memory`|Int|16|Memory allocated for job
-`mutect2.filter_filterExtraArgs`|String?|None|Extra arguments
+`mutect2.filter_filterExtraArgs`|String?|None|placehoulder for extra arguments
 `mutect2.mergeStats_timeout`|Int|5|Hours before task timeout
 `mutect2.mergeStats_memory`|Int|4|Memory allocated for job
-`mutect2.mergeStats_modules`|String|"gatk/4.1.6.0"|Names and versions of modules to load
 `mutect2.mergeVCFs_timeout`|Int|12|Hours before task timeout
 `mutect2.mergeVCFs_memory`|Int|4|Memory allocated for job
-`mutect2.runMutect2_timeout`|Int|24|Hours before task timeout
-`mutect2.runMutect2_memory`|Int|32|Memory allocated for job
-`mutect2.runMutect2_threads`|Int|4|Number of threads to request
-`mutect2.runMutect2_mutect2ExtraArgs`|String?|None|Extra arguments
-`mutect2.runMutect2_mutectTag`|String|"mutect2"|Tag
-`mutect2.splitStringToArray_modules`|String|""|Names and versions of modules to load
-`mutect2.splitStringToArray_timeout`|Int|1|Hours before task timeout
-`mutect2.splitStringToArray_memory`|Int|1|Memory allocated for job
-`mutect2.splitStringToArray_lineSeparator`|String|","|line separator
-`mutect2.normalBam`|File?|None|Input normal file (bam or sam)
-`mutect2.normalBai`|File?|None|Index file for normal bam
-`mutect2.pon`|File?|None|pon
-`mutect2.ponIdx`|File?|None|pon ID
-`mutect2.gnomad`|File?|None|gnomad
-`mutect2.gnomadIdx`|File?|None|gnomad ID
+`mutect2.runMutect2_timeout`|Int|24|Maximum amount of time (in hours) the task can run for.
+`mutect2.runMutect2_memory`|Int|32|Memory allocated to job (in GB).
+`mutect2.runMutect2_threads`|Int|4|Requested CPU threads
+`mutect2.runMutect2_mutect2ExtraArgs`|String?|None|placehoulder for extra arguments
+`mutect2.runMutect2_mutectTag`|String|"mutect2"|version tag for mutect
+`mutect2.splitStringToArray_timeout`|Int|1|Maximum amount of time (in hours) the task can run for.
+`mutect2.splitStringToArray_memory`|Int|1|Memory allocated to job (in GB)
+`mutect2.splitStringToArray_lineSeparator`|String|","|Interval group separator - these are the intervals to split by.
+`mutect2.normalBam`|File?|None|Input normal file (bam or sam).
+`mutect2.normalBai`|File?|None|Index for noramlBam
+`mutect2.pon`|File?|None|panel of normal
+`mutect2.ponIdx`|File?|None|index of pon
+`mutect2.gnomad`|File?|None|Genome Aggregation Database
+`mutect2.gnomadIdx`|File?|None|Index of gnomad
 `combineVariants.jobMemory`|Int|24|memory allocated to preprocessing, in GB
 `combineVariants.timeout`|Int|20|timeout in hours
 `combineVariants.threads`|Int|8|number of cpu threads to be used
@@ -93,7 +91,6 @@ Parameter|Value|Default|Description
 `variantEffectPredictor.vcf2maf_bufferSize`|Int|200|The buffer size
 `variantEffectPredictor.vcf2maf_minHomVaf`|Float|0.7|The minimum vaf for homozygous calls
 `variantEffectPredictor.vcf2maf_vepStats`|Boolean|true|If vepStats is true, remove flag '--no_stats' from vep. If vepStats is false, running vep with flag '--no_stats'
-`variantEffectPredictor.vcf2maf_species`|String|"homo_sapiens"|Species name
 `variantEffectPredictor.vcf2maf_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
 `variantEffectPredictor.tumorOnlyAlign_timeout`|Int|6|Hours before task timeout
 `variantEffectPredictor.tumorOnlyAlign_threads`|Int|4|Requested CPU threads
@@ -104,7 +101,6 @@ Parameter|Value|Default|Description
 `variantEffectPredictor.vep_threads`|Int|4|Requested CPU threads
 `variantEffectPredictor.vep_jobMemory`|Int|32|Memory allocated for this job (GB)
 `variantEffectPredictor.vep_vepStats`|Boolean|true|If vepStats is true, remove flag '--no_stats' from vep. If vepStats is false, running vep with flag '--no_stats'
-`variantEffectPredictor.vep_species`|String|"homo_sapiens"|Species name
 `variantEffectPredictor.vep_addParam`|String?|None|Additional vep parameters
 `variantEffectPredictor.vep_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
 `variantEffectPredictor.subsetVcf_timeout`|Int|6|Maximum amount of time (in hours) the task can run for.
@@ -132,25 +128,23 @@ Parameter|Value|Default|Description
 `filterMaf.threads`|Int|1|number of cpu threads to be used
 `matchedMutect2.filter_timeout`|Int|12|Hours before task timeout
 `matchedMutect2.filter_memory`|Int|16|Memory allocated for job
-`matchedMutect2.filter_filterExtraArgs`|String?|None|Extra arguments
+`matchedMutect2.filter_filterExtraArgs`|String?|None|placehoulder for extra arguments
 `matchedMutect2.mergeStats_timeout`|Int|5|Hours before task timeout
 `matchedMutect2.mergeStats_memory`|Int|4|Memory allocated for job
-`matchedMutect2.mergeStats_modules`|String|"gatk/4.1.6.0"|Names and versions of modules to load
 `matchedMutect2.mergeVCFs_timeout`|Int|12|Hours before task timeout
 `matchedMutect2.mergeVCFs_memory`|Int|4|Memory allocated for job
-`matchedMutect2.runMutect2_timeout`|Int|24|Hours before task timeout
-`matchedMutect2.runMutect2_memory`|Int|32|Memory allocated for job
-`matchedMutect2.runMutect2_threads`|Int|4|Number of threads to request
-`matchedMutect2.runMutect2_mutect2ExtraArgs`|String?|None|Extra arguments
-`matchedMutect2.runMutect2_mutectTag`|String|"mutect2"|Tag
-`matchedMutect2.splitStringToArray_modules`|String|""|Names and versions of modules to load
-`matchedMutect2.splitStringToArray_timeout`|Int|1|Hours before task timeout
-`matchedMutect2.splitStringToArray_memory`|Int|1|Memory allocated for job
-`matchedMutect2.splitStringToArray_lineSeparator`|String|","|line separator
-`matchedMutect2.pon`|File?|None|pon
-`matchedMutect2.ponIdx`|File?|None|pon ID
-`matchedMutect2.gnomad`|File?|None|gnomad
-`matchedMutect2.gnomadIdx`|File?|None|gnomad ID
+`matchedMutect2.runMutect2_timeout`|Int|24|Maximum amount of time (in hours) the task can run for.
+`matchedMutect2.runMutect2_memory`|Int|32|Memory allocated to job (in GB).
+`matchedMutect2.runMutect2_threads`|Int|4|Requested CPU threads
+`matchedMutect2.runMutect2_mutect2ExtraArgs`|String?|None|placehoulder for extra arguments
+`matchedMutect2.runMutect2_mutectTag`|String|"mutect2"|version tag for mutect
+`matchedMutect2.splitStringToArray_timeout`|Int|1|Maximum amount of time (in hours) the task can run for.
+`matchedMutect2.splitStringToArray_memory`|Int|1|Memory allocated to job (in GB)
+`matchedMutect2.splitStringToArray_lineSeparator`|String|","|Interval group separator - these are the intervals to split by.
+`matchedMutect2.pon`|File?|None|panel of normal
+`matchedMutect2.ponIdx`|File?|None|index of pon
+`matchedMutect2.gnomad`|File?|None|Genome Aggregation Database
+`matchedMutect2.gnomadIdx`|File?|None|Index of gnomad
 `matchedCombineVariants.jobMemory`|Int|24|memory allocated to preprocessing, in GB
 `matchedCombineVariants.timeout`|Int|20|timeout in hours
 `matchedCombineVariants.threads`|Int|8|number of cpu threads to be used
@@ -174,7 +168,6 @@ Parameter|Value|Default|Description
 `matchedVep.vcf2maf_bufferSize`|Int|200|The buffer size
 `matchedVep.vcf2maf_minHomVaf`|Float|0.7|The minimum vaf for homozygous calls
 `matchedVep.vcf2maf_vepStats`|Boolean|true|If vepStats is true, remove flag '--no_stats' from vep. If vepStats is false, running vep with flag '--no_stats'
-`matchedVep.vcf2maf_species`|String|"homo_sapiens"|Species name
 `matchedVep.vcf2maf_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
 `matchedVep.tumorOnlyAlign_timeout`|Int|6|Hours before task timeout
 `matchedVep.tumorOnlyAlign_threads`|Int|4|Requested CPU threads
@@ -185,7 +178,6 @@ Parameter|Value|Default|Description
 `matchedVep.vep_threads`|Int|4|Requested CPU threads
 `matchedVep.vep_jobMemory`|Int|32|Memory allocated for this job (GB)
 `matchedVep.vep_vepStats`|Boolean|true|If vepStats is true, remove flag '--no_stats' from vep. If vepStats is false, running vep with flag '--no_stats'
-`matchedVep.vep_species`|String|"homo_sapiens"|Species name
 `matchedVep.vep_addParam`|String?|None|Additional vep parameters
 `matchedVep.vep_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
 `matchedVep.subsetVcf_timeout`|Int|6|Maximum amount of time (in hours) the task can run for.
@@ -204,7 +196,7 @@ Parameter|Value|Default|Description
 `matchedVep.targetBedTask_jobMemory`|Int|32|Memory allocated for this job (GB)
 `matchedVep.targetBedTask_modules`|String|"bedtools/2.27 tabix/0.2.6"|Required environment modules
 `matchedVep.targetBedTask_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
-`matchedVep.normalName`|String?|None|Name of the normal sample
+`matchedVep.targetBed`|String?|None|Target bed file
 `matchedFilterMaf.mafNormalFile`|File?|None|input file for normal sample
 `matchedFilterMaf.freqList`|String|"$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt"|frequency list used in maf annotation
 `matchedFilterMaf.genesToKeep`|String|"$MAF_FILTERING_ROOT/genes_to_keep.txt"|gene list in maf filtering
@@ -218,85 +210,62 @@ Parameter|Value|Default|Description
 
 Output | Type | Description
 ---|---|---
-`tumorDcsScVcf`|File|DCS vcf for tumor sample
-`tumorDcsScVcfIndex`|File|DCS vcf index for tumor sample
-`tumorSscsScVcf`|File|SSCS vcf for tumor sample
-`tumorSscsScVcfIndex`|File|SSCS vcf index for tumor sample
-`tumorAllUniqueVcf`|File|vcf of DCS + singletons for tumor sample
-`tumorAllUniqueVcfIndex`|File|vcf index for DCS + singletons for tumor sample
-`tumorVepVcf`|File|vep vcf for tumor sample
-`tumorVepVcfIndex`|File|vep vcf index for tumor sample
-`tumorMafOutput`|File?|maf output for tumor sample
-`normalDcsScVcf`|File|DCS vcf for normal sample
-`normalDcsScVcfIndex`|File|DCS vcf index for normal sample
-`normalSscsScVcf`|File|SSCS vcf for normal sample
-`normalSscsScVcfIndex`|File|SSCS vcf index for normal sample
-`normalAllUniqueVcf`|File|vcf of DCS + singletons for tumor sample
-`normalAllUniqueVcfIndex`|File|vcf index for DCS + singletons for tumor sample
-`normalVepVcf`|File|vep vcf for normal sample
-`normalVepVcfIndex`|File|vep vcf index for normal sample
-`normalMafOutput`|File?|maf output for normal sample
-`matchedDcsScVcf`|File|DCS vcf for matched samples
-`matchedDcsScVcfIndex`|File|DCS vcf index for matched samples
-`matchedSscsScVcf`|File|SSCS vcf for matched samples
-`matchedSscsScVcfIndex`|File|SSCS vcf index for matched samples
-`matchedAllUniqueVcf`|File|vcf of DCS + singletons for matched samples
-`matchedAllUniqueVcfIndex`|File|vcf index for DCS + singletons for matched samples
-`matchedVepVcf`|File|vep vcf for matched samples
-`matchedVepVcfIndex`|File|vep vcf index for matched samples
-`matchedMafOutput`|File?|maf output for matched samples
-`filterredMaf`|File?|maf file after filtering
-`matchedFilterredMaf`|File?|maf file after filtering for matched maf(maf file of matched tumor/normal version)
+`tumorVepVcf`|File|{'description': 'vep vcf for tumor sample', 'vidarr_label': 'tumorVepVcf'}
+`tumorVepVcfIndex`|File|{'description': 'vep vcf index for tumor sample', 'vidarr_label': 'tumorVepVcfIndex'}
+`normalVepVcf`|File|{'description': 'vep vcf for normal sample', 'vidarr_label': 'normalVepVcf'}
+`normalVepVcfIndex`|File|{'description': 'vep vcf index for normal sample', 'vidarr_label': 'normalVepVcfIndex'}
+`matchedVepVcf`|File|{'description': 'vep vcf for matched samples', 'vidarr_label': 'matchedVepVcf'}
+`matchedVepVcfIndex`|File|{'description': 'vep vcf index for matched samples', 'vidarr_label': 'matchedVepVcfIndex'}
+`filteredMaf`|File?|{'description': 'maf file after filtering', 'vidarr_label': 'filterredMaf'}
+`matchedFilteredMaf`|File?|{'description': 'maf file after filtering for matched maf(maf file of matched tumor/normal version)', 'vidarr_label': 'matchedFilterredMaf'}
 
 
 ## Commands
- This section lists command(s) run by WORKFLOW workflow
+  This section lists command(s) run by mutect2Consensus workflow
+  
+  * Running mutect2Consensus
+  
+  ```
+     python3<<CODE
+     import subprocess
+     import sys
+     inputStrings = []
+     v = "~{sep=' ' inputVcfs}"
+     vcfFiles = v.split()
+     w = "~{sep=' ' workflows}"
+     workflowIds = w.split()
+     priority = "~{priority}"
+     
+     if len(vcfFiles) != len(workflowIds):
+         print("The arrays with input files and their respective workflow names are not of equal size!")
+     else:
+         for f in range(0, len(vcfFiles)):
+             inputStrings.append("--variant:" + workflowIds[f] + " " + vcfFiles[f])
+   
+     javaMemory = ~{jobMemory} - 6 
+     gatkCommand  = "$JAVA_ROOT/bin/java -Xmx" + str(javaMemory) + "G -jar $GATK_ROOT/GenomeAnalysisTK.jar "
+     gatkCommand += "-T CombineVariants "
+     gatkCommand += " ".join(inputStrings)
+     gatkCommand += " -R ~{referenceFasta} "
+     gatkCommand += "-o ~{outputPrefix}_combined.vcf.gz "
+     gatkCommand += "-genotypeMergeOptions PRIORITIZE "
+     gatkCommand += "-priority " + priority
+     gatkCommand += " 2>&1"
+   
+     result_output = subprocess.run(gatkCommand, shell=True)
+     sys.exit(result_output.returncode)
+     CODE
+   ```
  
- * Running WORKFLOW
- 
- ```
-  
-  <<<
-    python3<<CODE
-    import subprocess
-    import sys
-    inputStrings = []
-    v = "~{sep=' ' inputVcfs}"
-    vcfFiles = v.split()
-    w = "~{sep=' ' workflows}"
-    workflowIds = w.split()
-    priority = "~{priority}"
-    
-    if len(vcfFiles) != len(workflowIds):
-        print("The arrays with input files and their respective workflow names are not of equal size!")
-    else:
-        for f in range(0, len(vcfFiles)):
-            inputStrings.append("--variant:" + workflowIds[f] + " " + vcfFiles[f])
-  
-    javaMemory = ~{jobMemory} - 6 
-    gatkCommand  = "$JAVA_ROOT/bin/java -Xmx" + str(javaMemory) + "G -jar $GATK_ROOT/GenomeAnalysisTK.jar "
-    gatkCommand += "-T CombineVariants "
-    gatkCommand += " ".join(inputStrings)
-    gatkCommand += " -R ~{referenceFasta} "
-    gatkCommand += "-o ~{outputPrefix}_combined.vcf.gz "
-    gatkCommand += "-genotypeMergeOptions PRIORITIZE "
-    gatkCommand += "-priority " + priority
-    gatkCommand += " 2>&1"
-  
-    result_output = subprocess.run(gatkCommand, shell=True)
-    sys.exit(result_output.returncode)
-    CODE
-  >>>
-  ```
-  ```
-  
-    bcftools annotate -a ~{uniqueVcf} \
-   -c FMT/AD,FMT/DP ~{mergedVcf} -Oz \
-   -o "~{outputPrefix}.merged.vcf.gz"
-  
-   tabix -p vcf "~{outputPrefix}.merged.vcf.gz"
-  ```
-   ## Support
+   ```
+   
+     bcftools annotate -a ~{uniqueVcf} \
+    -c FMT/AD,FMT/DP ~{mergedVcf} -Oz \
+    -o "~{outputPrefix}.merged.vcf.gz"
+   
+    tabix -p vcf "~{outputPrefix}.merged.vcf.gz"
+   ```
+ ## Support
 
 For support, please file an issue on the [Github project](https://github.com/oicr-gsi) or send an email to gsi@oicr.on.ca .
 
