@@ -146,7 +146,7 @@
                 "allUniqueBamAndIndex": {
                     "bam": {
                         "contents": {
-                            "configuration": "/.mounts/labs/prod/vidarr/output-research/0f58/c319/f54d/0f58c319f54d069bf7a305f9f294bec8e8b81d74b570ffdfca3bfc307587efeb/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.all.unique.dcs.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.all.unique.dcs.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -158,7 +158,7 @@
                     },
                     "bamIndex": {
                         "contents": {
-                            "configuration": "/.mounts/labs/prod/vidarr/output-research/0f58/c319/f54d/0f58c319f54d069bf7a305f9f294bec8e8b81d74b570ffdfca3bfc307587efeb/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.all.unique.dcs.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.all.unique.dcs.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -172,7 +172,7 @@
                 "dcsScBamAndIndex": {
                     "bam": {
                         "contents": {
-                            "configuration": "/.mounts/labs/prod/vidarr/output-research/0f58/c319/f54d/0f58c319f54d069bf7a305f9f294bec8e8b81d74b570ffdfca3bfc307587efeb/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.dcs.sc.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.dcs.sc.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -184,7 +184,7 @@
                     },
                     "bamIndex":  {
                         "contents": {
-                            "configuration": "/.mounts/labs/prod/vidarr/output-research/0f58/c319/f54d/0f58c319f54d069bf7a305f9f294bec8e8b81d74b570ffdfca3bfc307587efeb/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.dcs.sc.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.dcs.sc.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -198,7 +198,7 @@
                 "sscsScBamAndIndex": {
                     "bam":  {
                         "contents": {
-                            "configuration": "/.mounts/labs/prod/vidarr/output-research/0f58/c319/f54d/0f58c319f54d069bf7a305f9f294bec8e8b81d74b570ffdfca3bfc307587efeb/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.sscs.sc.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.sscs.sc.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -210,7 +210,7 @@
                     },
                     "bamIndex": {
                         "contents": {
-                            "configuration": "/.mounts/labs/prod/vidarr/output-research/0f58/c319/f54d/0f58c319f54d069bf7a305f9f294bec8e8b81d74b570ffdfca3bfc307587efeb/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.sscs.sc.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.sscs.sc.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -229,7 +229,7 @@
                 "allUniqueBamAndIndex": {
                     "bam": {
                         "contents": {
-                            "configuration": "/.mounts/labs/prod/vidarr/output-research/e9e2/cc0e/4c9b/e9e2cc0e4c9b47e4f762d8f26a90cdfa6d8e8357dbfe4bf814e331f3aca5fd2f/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.all.unique.dcs.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.all.unique.dcs.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -241,7 +241,7 @@
                     },
                     "bamIndex": {
                         "contents": {
-                            "configuration": "/.mounts/labs/prod/vidarr/output-research/e9e2/cc0e/4c9b/e9e2cc0e4c9b47e4f762d8f26a90cdfa6d8e8357dbfe4bf814e331f3aca5fd2f/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.all.unique.dcs.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.all.unique.dcs.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -255,7 +255,7 @@
                 "dcsScBamAndIndex": {
                     "bam": {
                         "contents": {
-                            "configuration": "/.mounts/labs/prod/vidarr/output-research/e9e2/cc0e/4c9b/e9e2cc0e4c9b47e4f762d8f26a90cdfa6d8e8357dbfe4bf814e331f3aca5fd2f/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.dcs.sc.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.dcs.sc.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -267,7 +267,7 @@
                     },
                     "bamIndex":  {
                         "contents": {
-                            "configuration": "/.mounts/labs/prod/vidarr/output-research/e9e2/cc0e/4c9b/e9e2cc0e4c9b47e4f762d8f26a90cdfa6d8e8357dbfe4bf814e331f3aca5fd2f/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.dcs.sc.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.dcs.sc.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -281,7 +281,7 @@
                 "sscsScBamAndIndex": {
                     "bam":  {
                         "contents": {
-                            "configuration": "/.mounts/labs/prod/vidarr/output-research/e9e2/cc0e/4c9b/e9e2cc0e4c9b47e4f762d8f26a90cdfa6d8e8357dbfe4bf814e331f3aca5fd2f/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.sscs.sc.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.sscs.sc.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -293,7 +293,7 @@
                     },
                     "bamIndex": {
                         "contents": {
-                            "configuration": "/.mounts/labs/prod/vidarr/output-research/e9e2/cc0e/4c9b/e9e2cc0e4c9b47e4f762d8f26a90cdfa6d8e8357dbfe4bf814e331f3aca5fd2f/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.sscs.sc.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.sscs.sc.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
