@@ -146,7 +146,7 @@
                 "allUniqueBamAndIndex": {
                     "bam": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.all.unique.dcs.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.all.unique.dcs.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -158,7 +158,7 @@
                     },
                     "bamIndex": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.all.unique.dcs.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.all.unique.dcs.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -172,7 +172,7 @@
                 "dcsScBamAndIndex": {
                     "bam": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.dcs.sc.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.dcs.sc.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -184,7 +184,7 @@
                     },
                     "bamIndex":  {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.dcs.sc.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.dcs.sc.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -198,7 +198,7 @@
                 "sscsScBamAndIndex": {
                     "bam":  {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.sscs.sc.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.sscs.sc.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -210,7 +210,7 @@
                     },
                     "bamIndex": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.sscs.sc.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.sscs.sc.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -229,7 +229,7 @@
                 "allUniqueBamAndIndex": {
                     "bam": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.all.unique.dcs.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.all.unique.dcs.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -240,8 +240,8 @@
                         "type": "EXTERNAL"
                     },
                     "bamIndex": {
-                        "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.all.unique.dcs.sorted.bam.bai",
+                        "contents": {/.mounts/labs/gsi/testdata/mutect2Consensus/input_data
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.all.unique.dcs.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -255,7 +255,7 @@
                 "dcsScBamAndIndex": {
                     "bam": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.dcs.sc.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.dcs.sc.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -267,7 +267,7 @@
                     },
                     "bamIndex":  {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.dcs.sc.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.dcs.sc.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -281,7 +281,7 @@
                 "sscsScBamAndIndex": {
                     "bam":  {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.sscs.sc.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.sscs.sc.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -293,7 +293,7 @@
                     },
                     "bamIndex": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.sscs.sc.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.sscs.sc.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
