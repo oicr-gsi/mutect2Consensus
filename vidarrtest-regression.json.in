@@ -240,7 +240,7 @@
                         "type": "EXTERNAL"
                     },
                     "bamIndex": {
-                        "contents": {/.mounts/labs/gsi/testdata/mutect2Consensus/input_data
+                        "contents": {
                             "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.all.unique.dcs.sorted.bam.bai",
                             "externalIds": [
                                 {
