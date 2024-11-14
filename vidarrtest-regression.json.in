@@ -328,6 +328,7 @@
             "mutect2Consensus.variantEffectPredictor.subsetVcf_modules": null,
             "mutect2Consensus.variantEffectPredictor.subsetVcf_threads": null,
             "mutect2Consensus.variantEffectPredictor.subsetVcf_timeout": null,
+            "mutect2Consensus.variantEffectPredictor.targetBed": null,
             "mutect2Consensus.variantEffectPredictor.targetBedTask_basename": null,
             "mutect2Consensus.variantEffectPredictor.targetBedTask_jobMemory": null,
             "mutect2Consensus.variantEffectPredictor.targetBedTask_modules": null,
