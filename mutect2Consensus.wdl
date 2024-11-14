@@ -100,7 +100,6 @@ workflow mutect2Consensus {
         onlyTumor = true,
         tumorOnlyAlign_updateTagValue = true,
         vcf2maf_retainInfoProvided = true,
-        targetBed = intervalFile,
         tumorName = ig.outputFileNamePrefix,
         reference = reference
     }
