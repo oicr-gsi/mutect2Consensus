@@ -381,7 +381,7 @@ task filterMaf {
     String freqList ="$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt"
     String genesToKeep = "$MAF_FILTERING_ROOT/genes_to_keep.txt"
     String outputPrefix 
-    String modules = "python/3.9 pandas/1.4.2 maf-filtering/2023-10-06"
+    String modules = "python/3.9 pandas/1.4.2 maf-filtering/2024-07-10"
     Int jobMemory = 8
     Int timeout = 1
     Int threads = 1
