@@ -35,6 +35,7 @@ Parameter|Value|Description
 `normalName`|String|name of the normal sample
 `reference`|String|reference version
 `gatk`|String|gatk version to be used
+`filterMafFile`|Boolean|whether filter the maf file for a list of genes
 `combineVariants.workflows`|Array[String]|array of ids of producer workflows
 `matchedCombineVariants.workflows`|Array[String]|array of ids of producer workflows
 
@@ -119,10 +120,11 @@ Parameter|Value|Default|Description
 `variantEffectPredictor.targetBedTask_jobMemory`|Int|32|Memory allocated for this job (GB)
 `variantEffectPredictor.targetBedTask_modules`|String|"bedtools/2.27 tabix/0.2.6"|Required environment modules
 `variantEffectPredictor.targetBedTask_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
+`variantEffectPredictor.targetBed`|String?|None|Target bed file
 `variantEffectPredictor.normalName`|String?|None|Name of the normal sample
 `filterMaf.freqList`|String|"$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt"|frequency list used in maf annotation
 `filterMaf.genesToKeep`|String|"$MAF_FILTERING_ROOT/genes_to_keep.txt"|gene list in maf filtering
-`filterMaf.modules`|String|"python/3.9 pandas/1.4.2 maf-filtering/2023-10-06"|module for running preprocessing
+`filterMaf.modules`|String|"python/3.9 pandas/1.4.2 maf-filtering/2024-07-10"|module for running preprocessing
 `filterMaf.jobMemory`|Int|8|memory allocated to preprocessing, in GB
 `filterMaf.timeout`|Int|1|timeout in hours
 `filterMaf.threads`|Int|1|number of cpu threads to be used
@@ -200,7 +202,7 @@ Parameter|Value|Default|Description
 `matchedFilterMaf.mafNormalFile`|File?|None|input file for normal sample
 `matchedFilterMaf.freqList`|String|"$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt"|frequency list used in maf annotation
 `matchedFilterMaf.genesToKeep`|String|"$MAF_FILTERING_ROOT/genes_to_keep.txt"|gene list in maf filtering
-`matchedFilterMaf.modules`|String|"python/3.9 pandas/1.4.2 maf-filtering/2023-10-06"|module for running preprocessing
+`matchedFilterMaf.modules`|String|"python/3.9 pandas/1.4.2 maf-filtering/2024-07-10"|module for running preprocessing
 `matchedFilterMaf.jobMemory`|Int|8|memory allocated to preprocessing, in GB
 `matchedFilterMaf.timeout`|Int|1|timeout in hours
 `matchedFilterMaf.threads`|Int|1|number of cpu threads to be used
@@ -216,6 +218,9 @@ Output | Type | Description
 `normalVepVcfIndex`|File|{'description': 'vep vcf index for normal sample', 'vidarr_label': 'normalVepVcfIndex'}
 `matchedVepVcf`|File|{'description': 'vep vcf for matched samples', 'vidarr_label': 'matchedVepVcf'}
 `matchedVepVcfIndex`|File|{'description': 'vep vcf index for matched samples', 'vidarr_label': 'matchedVepVcfIndex'}
+`tumorMaf`|File?|{'description': 'maf file of tumor, before filtering', 'vidarr_label': 'tumorMaf'}
+`normalMaf`|File?|{'description': 'maf file of normal, before filtering', 'vidarr_label': 'normalMaf'}
+`matchedMaf`|File?|{'description': 'maf file of matched tumor and normal before filtering', 'vidarr_label': 'matchedMaf'}
 `filteredMaf`|File?|{'description': 'maf file after filtering', 'vidarr_label': 'filterredMaf'}
 `matchedFilteredMaf`|File?|{'description': 'maf file after filtering for matched maf(maf file of matched tumor/normal version)', 'vidarr_label': 'matchedFilterredMaf'}
 

@@ -31,6 +31,7 @@ workflow mutect2Consensus {
     String normalName
     String reference
     String gatk
+    Boolean filterMafFile
   }
 
   parameter_meta {
@@ -42,6 +43,7 @@ workflow mutect2Consensus {
     normalName: "name of the normal sample"
     reference: "reference version"
     gatk: "gatk version to be used"
+    filterMafFile: "whether filter the maf file for a list of genes"
   }
 
  Map[String,GenomeResources] resources = {
@@ -107,13 +109,13 @@ workflow mutect2Consensus {
   Array[File]mutect2FilteredVcfFilesArray = flatten(mutect2FilteredVcfFiles)
   Array[File]mutect2FilteredVcfIndexesArray = flatten(mutect2FilteredVcfIndexes)
 
-  File? tumorMaf = variantEffectPredictor.outputMaf[0]
-  File? normalMaf = variantEffectPredictor.outputMaf[1]
-  if (defined(tumorMaf) && defined(normalMaf)) {
+  File? tumor_Maf = variantEffectPredictor.outputMaf[0]
+  File? normal_Maf = variantEffectPredictor.outputMaf[1]
+  if (filterMafFile && defined(tumor_Maf) && defined(normal_Maf)) {
     call filterMaf {
       input:
-      mafFile = tumorMaf,
-      mafNormalFile = normalMaf,
+      mafFile = tumor_Maf,
+      mafNormalFile = normal_Maf,
       outputPrefix = tumorName
     }
   }
@@ -168,11 +170,13 @@ workflow mutect2Consensus {
       reference = reference
   }
 
-  call filterMaf as matchedFilterMaf {
-      input:
-      mafFile = matchedVep.outputMaf,
-      outputPrefix = tumorName + "_matched"
-    }
+  if (filterMafFile) {
+    call filterMaf as matchedFilterMaf {
+        input:
+        mafFile = matchedVep.outputMaf,
+        outputPrefix = tumorName + "_matched"
+      }
+  }
 
   meta {
     author: "Alexander Fortuna, Rishi Shah and Gavin Peng"
@@ -233,9 +237,21 @@ workflow mutect2Consensus {
           description: "vep vcf index for matched samples",
           vidarr_label: "matchedVepVcfIndex"
       },
+      tumorMaf: {
+          description: "maf file of tumor, before filtering",
+          vidarr_label: "tumorMaf"
+      },
+      normalMaf: {
+          description: "maf file of normal, before filtering",
+          vidarr_label: "normalMaf"
+      },
       filteredMaf: {
           description: "maf file after filtering",
           vidarr_label: "filterredMaf"
+      },
+      matchedMaf: {
+          description: "maf file of matched tumor and normal before filtering",
+          vidarr_label: "matchedMaf"
       },
       matchedFilteredMaf: {
           description: "maf file after filtering for matched maf(maf file of matched tumor/normal version)",
@@ -251,6 +267,9 @@ workflow mutect2Consensus {
     File normalVepVcfIndex = variantEffectPredictor.outputTbi[1]
     File matchedVepVcf = matchedVep.outputVcf
     File matchedVepVcfIndex = matchedVep.outputTbi
+    File? tumorMaf = variantEffectPredictor.outputMaf[0]
+    File? normalMaf = variantEffectPredictor.outputMaf[1]
+    File? matchedMaf = matchedVep.outputMaf
     File? filteredMaf = filterMaf.filteredMaf
     File? matchedFilteredMaf = matchedFilterMaf.filteredMaf
   }
