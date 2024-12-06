@@ -43,7 +43,7 @@ workflow mutect2Consensus {
     normalName: "name of the normal sample"
     reference: "reference version"
     gatk: "gatk version to be used"
-    filterMafFile: "whether filter the maf file for a list of genes"
+    filterMafFile: "whether filter the maf file"
   }
 
  Map[String,GenomeResources] resources = {
@@ -249,13 +249,13 @@ workflow mutect2Consensus {
           description: "maf file after filtering",
           vidarr_label: "filterredMaf"
       },
-      matchedMaf: {
+      somaticMaf: {
           description: "maf file of matched tumor and normal before filtering",
-          vidarr_label: "matchedMaf"
+          vidarr_label: "somaticMaf"
       },
-      matchedFilteredMaf: {
+      somaticFilteredMaf: {
           description: "maf file after filtering for matched maf(maf file of matched tumor/normal version)",
-          vidarr_label: "matchedFilterredMaf"
+          vidarr_label: "somaticFilterredMaf"
       }
     }
   }
@@ -269,9 +269,9 @@ workflow mutect2Consensus {
     File matchedVepVcfIndex = matchedVep.outputTbi
     File? tumorMaf = variantEffectPredictor.outputMaf[0]
     File? normalMaf = variantEffectPredictor.outputMaf[1]
-    File? matchedMaf = matchedVep.outputMaf
+    File? somaticMaf = matchedVep.outputMaf
     File? filteredMaf = filterMaf.filteredMaf
-    File? matchedFilteredMaf = matchedFilterMaf.filteredMaf
+    File? somaticFilteredMaf = matchedFilterMaf.filteredMaf
   }
 }
 
@@ -398,7 +398,6 @@ task filterMaf {
     File? mafFile
     File? mafNormalFile
     String freqList ="$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt"
-    String genesToKeep = "$MAF_FILTERING_ROOT/genes_to_keep.txt"
     String outputPrefix 
     String modules = "python/3.9 pandas/1.4.2 maf-filtering/2024-07-10"
     Int jobMemory = 8
@@ -410,7 +409,6 @@ task filterMaf {
     mafFile: "input maf file for tumor sample"
     mafNormalFile: "input file for normal sample"
     freqList: "frequency list used in maf annotation"
-    genesToKeep: "gene list in maf filtering"
     outputPrefix: "prefix for output file"
     modules: "module for running preprocessing"
     jobMemory: "memory allocated to preprocessing, in GB"
@@ -428,7 +426,6 @@ task filterMaf {
     maf_normal_path = "~{mafNormalFile}"
     freq_list_path = "~{freqList}"
     output_path_prefix = "~{outputPrefix}"
-    genes_to_keep_path = "~{genesToKeep}"
     clean_columns = ["t_depth", "t_ref_count", "t_alt_count", "n_depth", "n_ref_count", "n_alt_count", "gnomAD_AF"]
 
     if maf_normal_path:
@@ -460,12 +457,9 @@ task filterMaf {
 
     df_freq = pd.read_csv(freq_list_path,
                   sep = "\t")
-    with open(genes_to_keep_path) as f:
-      GENES_TO_KEEP = f.read()
 
 
     for row in df_pl.iterrows():
-      hugo_symbol = row[1]['Hugo_Symbol']
       chromosome = row[1]['Chromosome']
       start_position = row[1]['Start_Position']
       reference_allele = row[1]['Reference_Allele']
@@ -476,7 +470,7 @@ task filterMaf {
         # Lookup the entry in the BC and annotate the tumour maf with
         #   n_depth, n_ref_count, n_alt_count
 
-        row_lookup = df_bc[(df_bc['Hugo_Symbol'] == hugo_symbol) & 
+        row_lookup = df_bc[
                     (df_bc['Chromosome'] == chromosome) & 
                     (df_bc['Start_Position'] == start_position) &
                     (df_bc['Reference_Allele'] == reference_allele) &
@@ -509,13 +503,12 @@ task filterMaf {
       else:
           df_pl.at[row[0], 'Freq'] = 0
 
-    # Filter the maf to remove rows based on various criteria, but always maintaining genes in the GENES_TO_KEEP list  
+    # Filter the maf to remove rows based on various criteria
     for row in df_pl.iterrows():
-        hugo_symbol = row[1]['Hugo_Symbol']
         frequency = row[1]['Freq']
         gnomAD_AF = row[1]['gnomAD_AF']
         n_alt_count = row[1]['n_alt_count']
-        if hugo_symbol not in GENES_TO_KEEP or frequency > 0.1 or n_alt_count > 4 or gnomAD_AF > 0.001:
+        if  frequency > 0.1 or n_alt_count > 4 or gnomAD_AF > 0.001:
             df_pl = df_pl.drop(row[0])   
 
     df_pl.to_csv(output_path_prefix + '_filtered_maf.gz', sep = "\t", compression='gzip', index=False)
