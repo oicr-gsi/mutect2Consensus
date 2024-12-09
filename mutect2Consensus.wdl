@@ -122,7 +122,7 @@ workflow mutect2Consensus {
 
   Array[Array[BamAndBamIndex]]partitionedBamPairs = [[tumorInputGroup.dcsScBamAndIndex, normalInputGroup.dcsScBamAndIndex], [tumorInputGroup.sscsScBamAndIndex, normalInputGroup.sscsScBamAndIndex], [tumorInputGroup.allUniqueBamAndIndex, normalInputGroup.allUniqueBamAndIndex]]
   scatter ( bamAndIndexPair in partitionedBamPairs ) {
-    call mutect2.mutect2 as matchedMutect2 {
+    call mutect2.mutect2 as somaticMutect2 {
       input:
         tumorBam = bamAndIndexPair[0].bam,
         tumorBai = bamAndIndexPair[0].bamIndex,
@@ -132,35 +132,35 @@ workflow mutect2Consensus {
         intervalsToParallelizeBy = inputIntervalsToParalellizeBy,
         reference = reference,
         gatk = gatk,
-        outputFileNamePrefix = tumorName + "_matched"
+        outputFileNamePrefix = tumorName + "_somatic"
     }
   }
-  Array[File] matchedMutect2FilteredVcfFiles = matchedMutect2.filteredVcfFile
-  Array[File] matchedMutect2FilteredVcfIndexes = matchedMutect2.filteredVcfIndex
+  Array[File] somaticMutect2FilteredVcfFiles = somaticMutect2.filteredVcfFile
+  Array[File] somaticMutect2FilteredVcfIndexes = somaticMutect2.filteredVcfIndex
   
-  call combineVariants as matchedCombineVariants {
+  call combineVariants as somaticCombineVariants {
     input: 
-      inputVcfs = [matchedMutect2FilteredVcfFiles[0],matchedMutect2FilteredVcfFiles[1]],
-      inputIndexes = [matchedMutect2FilteredVcfIndexes[0],matchedMutect2FilteredVcfIndexes[1]],
+      inputVcfs = [somaticMutect2FilteredVcfFiles[0],somaticMutect2FilteredVcfFiles[1]],
+      inputIndexes = [somaticMutect2FilteredVcfIndexes[0],somaticMutect2FilteredVcfIndexes[1]],
       priority = "mutect2-dcsSc,mutect2-sscsSc",
-      outputPrefix = tumorName + "_matched",
+      outputPrefix = tumorName + "_somatic",
       referenceFasta = resources[reference].inputRefFasta,
       modules = resources[reference].combineVariants_modules
   }
 
-  call annotation as matchedAnnotation {
+  call annotation as somaticAnnotation {
     input: 
-      uniqueVcf = matchedMutect2FilteredVcfFiles[2],
-      uniqueVcfIndex = matchedMutect2FilteredVcfIndexes[2],
-      mergedVcf = matchedCombineVariants.combinedVcf,
-      mergedVcfIndex = matchedCombineVariants.combinedIndex,
-      outputPrefix = tumorName + "_matched"
+      uniqueVcf = somaticMutect2FilteredVcfFiles[2],
+      uniqueVcfIndex = somaticMutect2FilteredVcfIndexes[2],
+      mergedVcf = somaticCombineVariants.combinedVcf,
+      mergedVcfIndex = somaticCombineVariants.combinedIndex,
+      outputPrefix = tumorName + "_somatic"
   }
 
-  call vep.variantEffectPredictor as matchedVep{
+  call vep.variantEffectPredictor as somaticVep{
     input: 
-      vcfFile = matchedAnnotation.annotatedCombinedVcf,
-      vcfIndex = matchedAnnotation.annotatedCombinedIndex,
+      vcfFile = somaticAnnotation.annotatedCombinedVcf,
+      vcfIndex = somaticAnnotation.annotatedCombinedIndex,
       toMAF = true,
       onlyTumor = false,
       tumorName = tumorName,
@@ -171,10 +171,10 @@ workflow mutect2Consensus {
   }
 
   if (filterMafFile) {
-    call filterMaf as matchedFilterMaf {
+    call filterMaf as somaticFilterMaf {
         input:
-        mafFile = matchedVep.outputMaf,
-        outputPrefix = tumorName + "_matched"
+        mafFile = somaticVep.outputMaf,
+        outputPrefix = tumorName + "_somatic"
       }
   }
 
@@ -213,29 +213,29 @@ workflow mutect2Consensus {
      }
     ]
     output_meta: {
-      tumorVepVcf: {
+      tumorVcf: {
           description: "vep vcf for tumor sample",
-          vidarr_label: "tumorVepVcf"
+          vidarr_label: "tumorVcf"
       },
-      tumorVepVcfIndex: {
+      tumorVcfIndex: {
           description: "vep vcf index for tumor sample",
-          vidarr_label: "tumorVepVcfIndex"
+          vidarr_label: "tumorVcfIndex"
       },
-      normalVepVcf: {
+      normalVcf: {
           description: "vep vcf for normal sample",
-          vidarr_label: "normalVepVcf"
+          vidarr_label: "normalVcf"
       },
-      normalVepVcfIndex: {
+      normalVcfIndex: {
           description: "vep vcf index for normal sample",
-          vidarr_label: "normalVepVcfIndex"
+          vidarr_label: "normalVcfIndex"
       },
-      matchedVepVcf: {
-          description: "vep vcf for matched samples",
-          vidarr_label: "matchedVepVcf"
+      somaticVcf: {
+          description: "vep vcf for somatic samples",
+          vidarr_label: "somaticVcf"
       },
-      matchedVepVcfIndex: {
-          description: "vep vcf index for matched samples",
-          vidarr_label: "matchedVepVcfIndex"
+      somaticVcfIndex: {
+          description: "vep vcf index for somatic samples",
+          vidarr_label: "somaticVcfIndex"
       },
       tumorMaf: {
           description: "maf file of tumor, before filtering",
@@ -250,28 +250,28 @@ workflow mutect2Consensus {
           vidarr_label: "filterredMaf"
       },
       somaticMaf: {
-          description: "maf file of matched tumor and normal before filtering",
+          description: "Unfiltered maf file generated from mutect2 run in somatic mode, with matched tumor and normal",
           vidarr_label: "somaticMaf"
       },
       somaticFilteredMaf: {
-          description: "maf file after filtering for matched maf(maf file of matched tumor/normal version)",
+          description: "maf file after filtering for somaticMaf",
           vidarr_label: "somaticFilterredMaf"
       }
     }
   }
 
   output {
-    File tumorVepVcf = variantEffectPredictor.outputVcf[0]
-    File tumorVepVcfIndex = variantEffectPredictor.outputTbi[0]
-    File normalVepVcf = variantEffectPredictor.outputVcf[1]
-    File normalVepVcfIndex = variantEffectPredictor.outputTbi[1]
-    File matchedVepVcf = matchedVep.outputVcf
-    File matchedVepVcfIndex = matchedVep.outputTbi
+    File tumorVcf = variantEffectPredictor.outputVcf[0]
+    File tumorVcfIndex = variantEffectPredictor.outputTbi[0]
+    File normalVcf = variantEffectPredictor.outputVcf[1]
+    File normalVcfIndex = variantEffectPredictor.outputTbi[1]
+    File somaticVcf = somaticVep.outputVcf
+    File somaticVcfIndex = somaticVep.outputTbi
     File? tumorMaf = variantEffectPredictor.outputMaf[0]
     File? normalMaf = variantEffectPredictor.outputMaf[1]
-    File? somaticMaf = matchedVep.outputMaf
-    File? filteredMaf = filterMaf.filteredMaf
-    File? somaticFilteredMaf = matchedFilterMaf.filteredMaf
+    File? somaticMaf = somaticVep.outputMaf
+    File? tumorfilteredMaf = filterMaf.filteredMaf
+    File? somaticFilteredMaf = somaticFilterMaf.filteredMaf
   }
 }
 
