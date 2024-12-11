@@ -221,7 +221,7 @@ Output | Type | Description
 `tumorMaf`|File?|{'description': 'maf file of tumor, before filtering', 'vidarr_label': 'tumorMaf'}
 `normalMaf`|File?|{'description': 'maf file of normal, before filtering', 'vidarr_label': 'normalMaf'}
 `matchedMaf`|File?|{'description': 'maf file of matched tumor and normal before filtering', 'vidarr_label': 'matchedMaf'}
-`filteredMaf`|File?|{'description': 'maf file after filtering', 'vidarr_label': 'filterredMaf'}
+`filteredMaf`|File?|{'description': 'tumour Maf with normal annotation and filtering', 'vidarr_label': 'filterredMaf'}
 `matchedFilteredMaf`|File?|{'description': 'maf file after filtering for matched maf(maf file of matched tumor/normal version)', 'vidarr_label': 'matchedFilterredMaf'}
 
 
