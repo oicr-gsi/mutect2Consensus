@@ -246,7 +246,7 @@ workflow mutect2Consensus {
           vidarr_label: "normalMaf"
       },
       filteredMaf: {
-          description: "maf file after filtering",
+          description: "tumour Maf with normal annotation and filtering",
           vidarr_label: "filterredMaf"
       },
       somaticMaf: {
