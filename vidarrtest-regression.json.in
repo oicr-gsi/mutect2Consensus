@@ -386,7 +386,7 @@
                 ],
                 "type": "ALL"
             },
-            "mutect2Consensus.filteredMaf": {
+            "mutect2Consensus.tumorFilteredMaf": {
                 "contents": [
                     {
                         "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_0001_@JENKINSID@"
