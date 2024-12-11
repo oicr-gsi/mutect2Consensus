@@ -245,7 +245,7 @@ workflow mutect2Consensus {
           description: "maf file of normal, before filtering",
           vidarr_label: "normalMaf"
       },
-      filteredMaf: {
+      tumorFilteredMaf: {
           description: "tumour Maf with normal annotation and filtering",
           vidarr_label: "filterredMaf"
       },
@@ -270,7 +270,7 @@ workflow mutect2Consensus {
     File? tumorMaf = variantEffectPredictor.outputMaf[0]
     File? normalMaf = variantEffectPredictor.outputMaf[1]
     File? somaticMaf = somaticVep.outputMaf
-    File? tumorfilteredMaf = filterMaf.filteredMaf
+    File? tumorFilteredMaf = filterMaf.filteredMaf
     File? somaticFilteredMaf = somaticFilterMaf.filteredMaf
   }
 }
