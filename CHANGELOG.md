@@ -1,4 +1,4 @@
-## [1.0.4] - 2024-12-11
+## [1.0.5] - 2024-12-11
 ### Added
 - provision out unfiltered maf
 - Boolean for whether filter maf
