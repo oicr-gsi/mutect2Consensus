@@ -35,8 +35,9 @@ Parameter|Value|Description
 `normalName`|String|name of the normal sample
 `reference`|String|reference version
 `gatk`|String|gatk version to be used
+`filterMafFile`|Boolean|whether filter the maf file
 `combineVariants.workflows`|Array[String]|array of ids of producer workflows
-`matchedCombineVariants.workflows`|Array[String]|array of ids of producer workflows
+`somaticCombineVariants.workflows`|Array[String]|array of ids of producer workflows
 
 
 #### Optional workflow parameters:
@@ -119,105 +120,107 @@ Parameter|Value|Default|Description
 `variantEffectPredictor.targetBedTask_jobMemory`|Int|32|Memory allocated for this job (GB)
 `variantEffectPredictor.targetBedTask_modules`|String|"bedtools/2.27 tabix/0.2.6"|Required environment modules
 `variantEffectPredictor.targetBedTask_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
+`variantEffectPredictor.targetBed`|String?|None|Target bed file
 `variantEffectPredictor.normalName`|String?|None|Name of the normal sample
 `filterMaf.freqList`|String|"$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt"|frequency list used in maf annotation
-`filterMaf.genesToKeep`|String|"$MAF_FILTERING_ROOT/genes_to_keep.txt"|gene list in maf filtering
-`filterMaf.modules`|String|"python/3.9 pandas/1.4.2 maf-filtering/2023-10-06"|module for running preprocessing
+`filterMaf.modules`|String|"python/3.9 pandas/1.4.2 maf-filtering/2024-07-10"|module for running preprocessing
 `filterMaf.jobMemory`|Int|8|memory allocated to preprocessing, in GB
 `filterMaf.timeout`|Int|1|timeout in hours
 `filterMaf.threads`|Int|1|number of cpu threads to be used
-`matchedMutect2.filter_timeout`|Int|12|Hours before task timeout
-`matchedMutect2.filter_memory`|Int|16|Memory allocated for job
-`matchedMutect2.filter_filterExtraArgs`|String?|None|placehoulder for extra arguments
-`matchedMutect2.mergeStats_timeout`|Int|5|Hours before task timeout
-`matchedMutect2.mergeStats_memory`|Int|4|Memory allocated for job
-`matchedMutect2.mergeVCFs_timeout`|Int|12|Hours before task timeout
-`matchedMutect2.mergeVCFs_memory`|Int|4|Memory allocated for job
-`matchedMutect2.runMutect2_timeout`|Int|24|Maximum amount of time (in hours) the task can run for.
-`matchedMutect2.runMutect2_memory`|Int|32|Memory allocated to job (in GB).
-`matchedMutect2.runMutect2_threads`|Int|4|Requested CPU threads
-`matchedMutect2.runMutect2_mutect2ExtraArgs`|String?|None|placehoulder for extra arguments
-`matchedMutect2.runMutect2_mutectTag`|String|"mutect2"|version tag for mutect
-`matchedMutect2.splitStringToArray_timeout`|Int|1|Maximum amount of time (in hours) the task can run for.
-`matchedMutect2.splitStringToArray_memory`|Int|1|Memory allocated to job (in GB)
-`matchedMutect2.splitStringToArray_lineSeparator`|String|","|Interval group separator - these are the intervals to split by.
-`matchedMutect2.pon`|File?|None|panel of normal
-`matchedMutect2.ponIdx`|File?|None|index of pon
-`matchedMutect2.gnomad`|File?|None|Genome Aggregation Database
-`matchedMutect2.gnomadIdx`|File?|None|Index of gnomad
-`matchedCombineVariants.jobMemory`|Int|24|memory allocated to preprocessing, in GB
-`matchedCombineVariants.timeout`|Int|20|timeout in hours
-`matchedCombineVariants.threads`|Int|8|number of cpu threads to be used
-`matchedAnnotation.modules`|String|"samtools/1.9 bcftools/1.9 htslib/1.9 tabix/1.9"|module for running preprocessing
-`matchedAnnotation.jobMemory`|Int|24|memory allocated to preprocessing, in GB
-`matchedAnnotation.timeout`|Int|20|timeout in hours
-`matchedAnnotation.threads`|Int|8|number of cpu threads to be used
-`matchedVep.mergeVcfs_timeout`|Int|24|Maximum amount of time (in hours) the task can run for.
-`matchedVep.mergeVcfs_threads`|Int|4|Requested CPU threads.
-`matchedVep.mergeVcfs_overhead`|Int|6|Java overhead memory (in GB). jobMemory - overhead == java Xmx/heap memory.
-`matchedVep.mergeVcfs_jobMemory`|Int|24|Memory allocated to job (in GB).
-`matchedVep.mergeVcfs_extraArgs`|String?|None|Additional arguments to be passed directly to the command.
-`matchedVep.mergeVcfs_modules`|String|"gatk/4.1.7.0"|Required environment modules.
-`matchedVep.mergeMafs_timeout`|Int|24|Maximum amount of time (in hours) the task can run for.
-`matchedVep.mergeMafs_threads`|Int|4|Requested CPU threads.
-`matchedVep.mergeMafs_jobMemory`|Int|24|Memory allocated to job (in GB).
-`matchedVep.mergeMafs_modules`|String|"tabix/0.2.6"|Required environment modules
-`matchedVep.vcf2maf_timeout`|Int|48|Hours before task timeout
-`matchedVep.vcf2maf_threads`|Int|4|Requested CPU threads
-`matchedVep.vcf2maf_jobMemory`|Int|32|Memory allocated for this job (GB)
-`matchedVep.vcf2maf_bufferSize`|Int|200|The buffer size
-`matchedVep.vcf2maf_minHomVaf`|Float|0.7|The minimum vaf for homozygous calls
-`matchedVep.vcf2maf_vepStats`|Boolean|true|If vepStats is true, remove flag '--no_stats' from vep. If vepStats is false, running vep with flag '--no_stats'
-`matchedVep.vcf2maf_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
-`matchedVep.tumorOnlyAlign_timeout`|Int|6|Hours before task timeout
-`matchedVep.tumorOnlyAlign_threads`|Int|4|Requested CPU threads
-`matchedVep.tumorOnlyAlign_jobMemory`|Int|32|Memory allocated for this job (GB)
-`matchedVep.tumorOnlyAlign_modules`|String|"bcftools/1.9 tabix/0.2.6"|Required environment modules
-`matchedVep.tumorOnlyAlign_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
-`matchedVep.vep_timeout`|Int|16|Hours before task timeout
-`matchedVep.vep_threads`|Int|4|Requested CPU threads
-`matchedVep.vep_jobMemory`|Int|32|Memory allocated for this job (GB)
-`matchedVep.vep_vepStats`|Boolean|true|If vepStats is true, remove flag '--no_stats' from vep. If vepStats is false, running vep with flag '--no_stats'
-`matchedVep.vep_addParam`|String?|None|Additional vep parameters
-`matchedVep.vep_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
-`matchedVep.subsetVcf_timeout`|Int|6|Maximum amount of time (in hours) the task can run for.
-`matchedVep.subsetVcf_threads`|Int|4|Requested CPU threads.
-`matchedVep.subsetVcf_jobMemory`|Int|32|Memory allocated to job (in GB).
-`matchedVep.subsetVcf_modules`|String|"bcftools/1.9"|Required environment modules
-`matchedVep.subsetVcf_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
-`matchedVep.chromosomeArray_timeout`|Int|1|Maximum amount of time (in hours) the task can run for.
-`matchedVep.chromosomeArray_threads`|Int|4|Requested CPU threads.
-`matchedVep.chromosomeArray_jobMemory`|Int|1|Memory allocated to job (in GB).
-`matchedVep.getSampleNames_timeout`|Int|1|Hours before task timeout
-`matchedVep.getSampleNames_threads`|Int|4|Requested CPU threads
-`matchedVep.getSampleNames_jobMemory`|Int|1|Memory allocated for this job (GB)
-`matchedVep.targetBedTask_timeout`|Int|6|Hours before task timeout
-`matchedVep.targetBedTask_threads`|Int|4|Requested CPU threads
-`matchedVep.targetBedTask_jobMemory`|Int|32|Memory allocated for this job (GB)
-`matchedVep.targetBedTask_modules`|String|"bedtools/2.27 tabix/0.2.6"|Required environment modules
-`matchedVep.targetBedTask_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
-`matchedVep.targetBed`|String?|None|Target bed file
-`matchedFilterMaf.mafNormalFile`|File?|None|input file for normal sample
-`matchedFilterMaf.freqList`|String|"$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt"|frequency list used in maf annotation
-`matchedFilterMaf.genesToKeep`|String|"$MAF_FILTERING_ROOT/genes_to_keep.txt"|gene list in maf filtering
-`matchedFilterMaf.modules`|String|"python/3.9 pandas/1.4.2 maf-filtering/2023-10-06"|module for running preprocessing
-`matchedFilterMaf.jobMemory`|Int|8|memory allocated to preprocessing, in GB
-`matchedFilterMaf.timeout`|Int|1|timeout in hours
-`matchedFilterMaf.threads`|Int|1|number of cpu threads to be used
+`somaticMutect2.filter_timeout`|Int|12|Hours before task timeout
+`somaticMutect2.filter_memory`|Int|16|Memory allocated for job
+`somaticMutect2.filter_filterExtraArgs`|String?|None|placehoulder for extra arguments
+`somaticMutect2.mergeStats_timeout`|Int|5|Hours before task timeout
+`somaticMutect2.mergeStats_memory`|Int|4|Memory allocated for job
+`somaticMutect2.mergeVCFs_timeout`|Int|12|Hours before task timeout
+`somaticMutect2.mergeVCFs_memory`|Int|4|Memory allocated for job
+`somaticMutect2.runMutect2_timeout`|Int|24|Maximum amount of time (in hours) the task can run for.
+`somaticMutect2.runMutect2_memory`|Int|32|Memory allocated to job (in GB).
+`somaticMutect2.runMutect2_threads`|Int|4|Requested CPU threads
+`somaticMutect2.runMutect2_mutect2ExtraArgs`|String?|None|placehoulder for extra arguments
+`somaticMutect2.runMutect2_mutectTag`|String|"mutect2"|version tag for mutect
+`somaticMutect2.splitStringToArray_timeout`|Int|1|Maximum amount of time (in hours) the task can run for.
+`somaticMutect2.splitStringToArray_memory`|Int|1|Memory allocated to job (in GB)
+`somaticMutect2.splitStringToArray_lineSeparator`|String|","|Interval group separator - these are the intervals to split by.
+`somaticMutect2.pon`|File?|None|panel of normal
+`somaticMutect2.ponIdx`|File?|None|index of pon
+`somaticMutect2.gnomad`|File?|None|Genome Aggregation Database
+`somaticMutect2.gnomadIdx`|File?|None|Index of gnomad
+`somaticCombineVariants.jobMemory`|Int|24|memory allocated to preprocessing, in GB
+`somaticCombineVariants.timeout`|Int|20|timeout in hours
+`somaticCombineVariants.threads`|Int|8|number of cpu threads to be used
+`somaticAnnotation.modules`|String|"samtools/1.9 bcftools/1.9 htslib/1.9 tabix/1.9"|module for running preprocessing
+`somaticAnnotation.jobMemory`|Int|24|memory allocated to preprocessing, in GB
+`somaticAnnotation.timeout`|Int|20|timeout in hours
+`somaticAnnotation.threads`|Int|8|number of cpu threads to be used
+`somaticVep.mergeVcfs_timeout`|Int|24|Maximum amount of time (in hours) the task can run for.
+`somaticVep.mergeVcfs_threads`|Int|4|Requested CPU threads.
+`somaticVep.mergeVcfs_overhead`|Int|6|Java overhead memory (in GB). jobMemory - overhead == java Xmx/heap memory.
+`somaticVep.mergeVcfs_jobMemory`|Int|24|Memory allocated to job (in GB).
+`somaticVep.mergeVcfs_extraArgs`|String?|None|Additional arguments to be passed directly to the command.
+`somaticVep.mergeVcfs_modules`|String|"gatk/4.1.7.0"|Required environment modules.
+`somaticVep.mergeMafs_timeout`|Int|24|Maximum amount of time (in hours) the task can run for.
+`somaticVep.mergeMafs_threads`|Int|4|Requested CPU threads.
+`somaticVep.mergeMafs_jobMemory`|Int|24|Memory allocated to job (in GB).
+`somaticVep.mergeMafs_modules`|String|"tabix/0.2.6"|Required environment modules
+`somaticVep.vcf2maf_timeout`|Int|48|Hours before task timeout
+`somaticVep.vcf2maf_threads`|Int|4|Requested CPU threads
+`somaticVep.vcf2maf_jobMemory`|Int|32|Memory allocated for this job (GB)
+`somaticVep.vcf2maf_bufferSize`|Int|200|The buffer size
+`somaticVep.vcf2maf_minHomVaf`|Float|0.7|The minimum vaf for homozygous calls
+`somaticVep.vcf2maf_vepStats`|Boolean|true|If vepStats is true, remove flag '--no_stats' from vep. If vepStats is false, running vep with flag '--no_stats'
+`somaticVep.vcf2maf_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
+`somaticVep.tumorOnlyAlign_timeout`|Int|6|Hours before task timeout
+`somaticVep.tumorOnlyAlign_threads`|Int|4|Requested CPU threads
+`somaticVep.tumorOnlyAlign_jobMemory`|Int|32|Memory allocated for this job (GB)
+`somaticVep.tumorOnlyAlign_modules`|String|"bcftools/1.9 tabix/0.2.6"|Required environment modules
+`somaticVep.tumorOnlyAlign_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
+`somaticVep.vep_timeout`|Int|16|Hours before task timeout
+`somaticVep.vep_threads`|Int|4|Requested CPU threads
+`somaticVep.vep_jobMemory`|Int|32|Memory allocated for this job (GB)
+`somaticVep.vep_vepStats`|Boolean|true|If vepStats is true, remove flag '--no_stats' from vep. If vepStats is false, running vep with flag '--no_stats'
+`somaticVep.vep_addParam`|String?|None|Additional vep parameters
+`somaticVep.vep_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
+`somaticVep.subsetVcf_timeout`|Int|6|Maximum amount of time (in hours) the task can run for.
+`somaticVep.subsetVcf_threads`|Int|4|Requested CPU threads.
+`somaticVep.subsetVcf_jobMemory`|Int|32|Memory allocated to job (in GB).
+`somaticVep.subsetVcf_modules`|String|"bcftools/1.9"|Required environment modules
+`somaticVep.subsetVcf_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
+`somaticVep.chromosomeArray_timeout`|Int|1|Maximum amount of time (in hours) the task can run for.
+`somaticVep.chromosomeArray_threads`|Int|4|Requested CPU threads.
+`somaticVep.chromosomeArray_jobMemory`|Int|1|Memory allocated to job (in GB).
+`somaticVep.getSampleNames_timeout`|Int|1|Hours before task timeout
+`somaticVep.getSampleNames_threads`|Int|4|Requested CPU threads
+`somaticVep.getSampleNames_jobMemory`|Int|1|Memory allocated for this job (GB)
+`somaticVep.targetBedTask_timeout`|Int|6|Hours before task timeout
+`somaticVep.targetBedTask_threads`|Int|4|Requested CPU threads
+`somaticVep.targetBedTask_jobMemory`|Int|32|Memory allocated for this job (GB)
+`somaticVep.targetBedTask_modules`|String|"bedtools/2.27 tabix/0.2.6"|Required environment modules
+`somaticVep.targetBedTask_basename`|String|basename("~{vcfFile}",".vcf.gz")|Base name
+`somaticVep.targetBed`|String?|None|Target bed file
+`somaticFilterMaf.mafNormalFile`|File?|None|input file for normal sample
+`somaticFilterMaf.freqList`|String|"$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt"|frequency list used in maf annotation
+`somaticFilterMaf.modules`|String|"python/3.9 pandas/1.4.2 maf-filtering/2024-07-10"|module for running preprocessing
+`somaticFilterMaf.jobMemory`|Int|8|memory allocated to preprocessing, in GB
+`somaticFilterMaf.timeout`|Int|1|timeout in hours
+`somaticFilterMaf.threads`|Int|1|number of cpu threads to be used
 
 
 ### Outputs
 
 Output | Type | Description
 ---|---|---
-`tumorVepVcf`|File|{'description': 'vep vcf for tumor sample', 'vidarr_label': 'tumorVepVcf'}
-`tumorVepVcfIndex`|File|{'description': 'vep vcf index for tumor sample', 'vidarr_label': 'tumorVepVcfIndex'}
-`normalVepVcf`|File|{'description': 'vep vcf for normal sample', 'vidarr_label': 'normalVepVcf'}
-`normalVepVcfIndex`|File|{'description': 'vep vcf index for normal sample', 'vidarr_label': 'normalVepVcfIndex'}
-`matchedVepVcf`|File|{'description': 'vep vcf for matched samples', 'vidarr_label': 'matchedVepVcf'}
-`matchedVepVcfIndex`|File|{'description': 'vep vcf index for matched samples', 'vidarr_label': 'matchedVepVcfIndex'}
-`filteredMaf`|File?|{'description': 'maf file after filtering', 'vidarr_label': 'filterredMaf'}
-`matchedFilteredMaf`|File?|{'description': 'maf file after filtering for matched maf(maf file of matched tumor/normal version)', 'vidarr_label': 'matchedFilterredMaf'}
+`tumorVcf`|File|{'description': 'vep vcf for tumor sample', 'vidarr_label': 'tumorVcf'}
+`tumorVcfIndex`|File|{'description': 'vep vcf index for tumor sample', 'vidarr_label': 'tumorVcfIndex'}
+`normalVcf`|File|{'description': 'vep vcf for normal sample', 'vidarr_label': 'normalVcf'}
+`normalVcfIndex`|File|{'description': 'vep vcf index for normal sample', 'vidarr_label': 'normalVcfIndex'}
+`somaticVcf`|File|{'description': 'vep vcf for somatic samples', 'vidarr_label': 'somaticVcf'}
+`somaticVcfIndex`|File|{'description': 'vep vcf index for somatic samples', 'vidarr_label': 'somaticVcfIndex'}
+`tumorMaf`|File?|{'description': 'maf file of tumor, before filtering', 'vidarr_label': 'tumorMaf'}
+`normalMaf`|File?|{'description': 'maf file of normal, before filtering', 'vidarr_label': 'normalMaf'}
+`somaticMaf`|File?|{'description': 'Unfiltered maf file generated from mutect2 run in somatic mode, with matched tumor and normal', 'vidarr_label': 'somaticMaf'}
+`tumorFilteredMaf`|File?|{'description': 'tumour Maf with normal annotation and filtering', 'vidarr_label': 'filterredMaf'}
+`somaticFilteredMaf`|File?|{'description': 'maf file after filtering for somaticMaf', 'vidarr_label': 'somaticFilterredMaf'}
 
 
 ## Commands

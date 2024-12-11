@@ -1,3 +1,16 @@
+## [1.0.4] - 2024-12-11
+### Added
+- provision out unfiltered maf
+- Boolean for whether filter maf
+
+### Changed 
+- output file name changes
+- task name changes
+- meta changes
+
+### Removed
+- filtering for a panel of genes
+
 ## 1.0.3 - 2024-06-28
 - Added tumour and normal maf clean up before filtering (convert to numeric, replace NaN with 0)
 - Changed some output file names to make them clear 

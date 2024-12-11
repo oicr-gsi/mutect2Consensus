@@ -31,6 +31,7 @@ workflow mutect2Consensus {
     String normalName
     String reference
     String gatk
+    Boolean filterMafFile
   }
 
   parameter_meta {
@@ -42,6 +43,7 @@ workflow mutect2Consensus {
     normalName: "name of the normal sample"
     reference: "reference version"
     gatk: "gatk version to be used"
+    filterMafFile: "whether filter the maf file"
   }
 
  Map[String,GenomeResources] resources = {
@@ -107,20 +109,20 @@ workflow mutect2Consensus {
   Array[File]mutect2FilteredVcfFilesArray = flatten(mutect2FilteredVcfFiles)
   Array[File]mutect2FilteredVcfIndexesArray = flatten(mutect2FilteredVcfIndexes)
 
-  File? tumorMaf = variantEffectPredictor.outputMaf[0]
-  File? normalMaf = variantEffectPredictor.outputMaf[1]
-  if (defined(tumorMaf) && defined(normalMaf)) {
+  File? tumor_Maf = variantEffectPredictor.outputMaf[0]
+  File? normal_Maf = variantEffectPredictor.outputMaf[1]
+  if (filterMafFile && defined(tumor_Maf) && defined(normal_Maf)) {
     call filterMaf {
       input:
-      mafFile = tumorMaf,
-      mafNormalFile = normalMaf,
+      mafFile = tumor_Maf,
+      mafNormalFile = normal_Maf,
       outputPrefix = tumorName
     }
   }
 
   Array[Array[BamAndBamIndex]]partitionedBamPairs = [[tumorInputGroup.dcsScBamAndIndex, normalInputGroup.dcsScBamAndIndex], [tumorInputGroup.sscsScBamAndIndex, normalInputGroup.sscsScBamAndIndex], [tumorInputGroup.allUniqueBamAndIndex, normalInputGroup.allUniqueBamAndIndex]]
   scatter ( bamAndIndexPair in partitionedBamPairs ) {
-    call mutect2.mutect2 as matchedMutect2 {
+    call mutect2.mutect2 as somaticMutect2 {
       input:
         tumorBam = bamAndIndexPair[0].bam,
         tumorBai = bamAndIndexPair[0].bamIndex,
@@ -130,35 +132,35 @@ workflow mutect2Consensus {
         intervalsToParallelizeBy = inputIntervalsToParalellizeBy,
         reference = reference,
         gatk = gatk,
-        outputFileNamePrefix = tumorName + "_matched"
+        outputFileNamePrefix = tumorName + "_somatic"
     }
   }
-  Array[File] matchedMutect2FilteredVcfFiles = matchedMutect2.filteredVcfFile
-  Array[File] matchedMutect2FilteredVcfIndexes = matchedMutect2.filteredVcfIndex
+  Array[File] somaticMutect2FilteredVcfFiles = somaticMutect2.filteredVcfFile
+  Array[File] somaticMutect2FilteredVcfIndexes = somaticMutect2.filteredVcfIndex
   
-  call combineVariants as matchedCombineVariants {
+  call combineVariants as somaticCombineVariants {
     input: 
-      inputVcfs = [matchedMutect2FilteredVcfFiles[0],matchedMutect2FilteredVcfFiles[1]],
-      inputIndexes = [matchedMutect2FilteredVcfIndexes[0],matchedMutect2FilteredVcfIndexes[1]],
+      inputVcfs = [somaticMutect2FilteredVcfFiles[0],somaticMutect2FilteredVcfFiles[1]],
+      inputIndexes = [somaticMutect2FilteredVcfIndexes[0],somaticMutect2FilteredVcfIndexes[1]],
       priority = "mutect2-dcsSc,mutect2-sscsSc",
-      outputPrefix = tumorName + "_matched",
+      outputPrefix = tumorName + "_somatic",
       referenceFasta = resources[reference].inputRefFasta,
       modules = resources[reference].combineVariants_modules
   }
 
-  call annotation as matchedAnnotation {
+  call annotation as somaticAnnotation {
     input: 
-      uniqueVcf = matchedMutect2FilteredVcfFiles[2],
-      uniqueVcfIndex = matchedMutect2FilteredVcfIndexes[2],
-      mergedVcf = matchedCombineVariants.combinedVcf,
-      mergedVcfIndex = matchedCombineVariants.combinedIndex,
-      outputPrefix = tumorName + "_matched"
+      uniqueVcf = somaticMutect2FilteredVcfFiles[2],
+      uniqueVcfIndex = somaticMutect2FilteredVcfIndexes[2],
+      mergedVcf = somaticCombineVariants.combinedVcf,
+      mergedVcfIndex = somaticCombineVariants.combinedIndex,
+      outputPrefix = tumorName + "_somatic"
   }
 
-  call vep.variantEffectPredictor as matchedVep{
+  call vep.variantEffectPredictor as somaticVep{
     input: 
-      vcfFile = matchedAnnotation.annotatedCombinedVcf,
-      vcfIndex = matchedAnnotation.annotatedCombinedIndex,
+      vcfFile = somaticAnnotation.annotatedCombinedVcf,
+      vcfIndex = somaticAnnotation.annotatedCombinedIndex,
       toMAF = true,
       onlyTumor = false,
       tumorName = tumorName,
@@ -168,11 +170,13 @@ workflow mutect2Consensus {
       reference = reference
   }
 
-  call filterMaf as matchedFilterMaf {
-      input:
-      mafFile = matchedVep.outputMaf,
-      outputPrefix = tumorName + "_matched"
-    }
+  if (filterMafFile) {
+    call filterMaf as somaticFilterMaf {
+        input:
+        mafFile = somaticVep.outputMaf,
+        outputPrefix = tumorName + "_somatic"
+      }
+  }
 
   meta {
     author: "Alexander Fortuna, Rishi Shah and Gavin Peng"
@@ -209,50 +213,65 @@ workflow mutect2Consensus {
      }
     ]
     output_meta: {
-      tumorVepVcf: {
+      tumorVcf: {
           description: "vep vcf for tumor sample",
-          vidarr_label: "tumorVepVcf"
+          vidarr_label: "tumorVcf"
       },
-      tumorVepVcfIndex: {
+      tumorVcfIndex: {
           description: "vep vcf index for tumor sample",
-          vidarr_label: "tumorVepVcfIndex"
+          vidarr_label: "tumorVcfIndex"
       },
-      normalVepVcf: {
+      normalVcf: {
           description: "vep vcf for normal sample",
-          vidarr_label: "normalVepVcf"
+          vidarr_label: "normalVcf"
       },
-      normalVepVcfIndex: {
+      normalVcfIndex: {
           description: "vep vcf index for normal sample",
-          vidarr_label: "normalVepVcfIndex"
+          vidarr_label: "normalVcfIndex"
       },
-      matchedVepVcf: {
-          description: "vep vcf for matched samples",
-          vidarr_label: "matchedVepVcf"
+      somaticVcf: {
+          description: "vep vcf for somatic samples",
+          vidarr_label: "somaticVcf"
       },
-      matchedVepVcfIndex: {
-          description: "vep vcf index for matched samples",
-          vidarr_label: "matchedVepVcfIndex"
+      somaticVcfIndex: {
+          description: "vep vcf index for somatic samples",
+          vidarr_label: "somaticVcfIndex"
       },
-      filteredMaf: {
-          description: "maf file after filtering",
+      tumorMaf: {
+          description: "maf file of tumor, before filtering",
+          vidarr_label: "tumorMaf"
+      },
+      normalMaf: {
+          description: "maf file of normal, before filtering",
+          vidarr_label: "normalMaf"
+      },
+      tumorFilteredMaf: {
+          description: "tumour Maf with normal annotation and filtering",
           vidarr_label: "filterredMaf"
       },
-      matchedFilteredMaf: {
-          description: "maf file after filtering for matched maf(maf file of matched tumor/normal version)",
-          vidarr_label: "matchedFilterredMaf"
+      somaticMaf: {
+          description: "Unfiltered maf file generated from mutect2 run in somatic mode, with matched tumor and normal",
+          vidarr_label: "somaticMaf"
+      },
+      somaticFilteredMaf: {
+          description: "maf file after filtering for somaticMaf",
+          vidarr_label: "somaticFilterredMaf"
       }
     }
   }
 
   output {
-    File tumorVepVcf = variantEffectPredictor.outputVcf[0]
-    File tumorVepVcfIndex = variantEffectPredictor.outputTbi[0]
-    File normalVepVcf = variantEffectPredictor.outputVcf[1]
-    File normalVepVcfIndex = variantEffectPredictor.outputTbi[1]
-    File matchedVepVcf = matchedVep.outputVcf
-    File matchedVepVcfIndex = matchedVep.outputTbi
-    File? filteredMaf = filterMaf.filteredMaf
-    File? matchedFilteredMaf = matchedFilterMaf.filteredMaf
+    File tumorVcf = variantEffectPredictor.outputVcf[0]
+    File tumorVcfIndex = variantEffectPredictor.outputTbi[0]
+    File normalVcf = variantEffectPredictor.outputVcf[1]
+    File normalVcfIndex = variantEffectPredictor.outputTbi[1]
+    File somaticVcf = somaticVep.outputVcf
+    File somaticVcfIndex = somaticVep.outputTbi
+    File? tumorMaf = variantEffectPredictor.outputMaf[0]
+    File? normalMaf = variantEffectPredictor.outputMaf[1]
+    File? somaticMaf = somaticVep.outputMaf
+    File? tumorFilteredMaf = filterMaf.filteredMaf
+    File? somaticFilteredMaf = somaticFilterMaf.filteredMaf
   }
 }
 
@@ -379,7 +398,6 @@ task filterMaf {
     File? mafFile
     File? mafNormalFile
     String freqList ="$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt"
-    String genesToKeep = "$MAF_FILTERING_ROOT/genes_to_keep.txt"
     String outputPrefix 
     String modules = "python/3.9 pandas/1.4.2 maf-filtering/2024-07-10"
     Int jobMemory = 8
@@ -391,7 +409,6 @@ task filterMaf {
     mafFile: "input maf file for tumor sample"
     mafNormalFile: "input file for normal sample"
     freqList: "frequency list used in maf annotation"
-    genesToKeep: "gene list in maf filtering"
     outputPrefix: "prefix for output file"
     modules: "module for running preprocessing"
     jobMemory: "memory allocated to preprocessing, in GB"
@@ -409,7 +426,6 @@ task filterMaf {
     maf_normal_path = "~{mafNormalFile}"
     freq_list_path = "~{freqList}"
     output_path_prefix = "~{outputPrefix}"
-    genes_to_keep_path = "~{genesToKeep}"
     clean_columns = ["t_depth", "t_ref_count", "t_alt_count", "n_depth", "n_ref_count", "n_alt_count", "gnomAD_AF"]
 
     if maf_normal_path:
@@ -441,12 +457,9 @@ task filterMaf {
 
     df_freq = pd.read_csv(freq_list_path,
                   sep = "\t")
-    with open(genes_to_keep_path) as f:
-      GENES_TO_KEEP = f.read()
 
 
     for row in df_pl.iterrows():
-      hugo_symbol = row[1]['Hugo_Symbol']
       chromosome = row[1]['Chromosome']
       start_position = row[1]['Start_Position']
       reference_allele = row[1]['Reference_Allele']
@@ -457,7 +470,7 @@ task filterMaf {
         # Lookup the entry in the BC and annotate the tumour maf with
         #   n_depth, n_ref_count, n_alt_count
 
-        row_lookup = df_bc[(df_bc['Hugo_Symbol'] == hugo_symbol) & 
+        row_lookup = df_bc[
                     (df_bc['Chromosome'] == chromosome) & 
                     (df_bc['Start_Position'] == start_position) &
                     (df_bc['Reference_Allele'] == reference_allele) &
@@ -490,13 +503,12 @@ task filterMaf {
       else:
           df_pl.at[row[0], 'Freq'] = 0
 
-    # Filter the maf to remove rows based on various criteria, but always maintaining genes in the GENES_TO_KEEP list  
+    # Filter the maf to remove rows based on various criteria
     for row in df_pl.iterrows():
-        hugo_symbol = row[1]['Hugo_Symbol']
         frequency = row[1]['Freq']
         gnomAD_AF = row[1]['gnomAD_AF']
         n_alt_count = row[1]['n_alt_count']
-        if hugo_symbol not in GENES_TO_KEEP or frequency > 0.1 or n_alt_count > 4 or gnomAD_AF > 0.001:
+        if  frequency > 0.1 or n_alt_count > 4 or gnomAD_AF > 0.001:
             df_pl = df_pl.drop(row[0])   
 
     df_pl.to_csv(output_path_prefix + '_filtered_maf.gz', sep = "\t", compression='gzip', index=False)
