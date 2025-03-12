@@ -1,3 +1,7 @@
+## [1.0.6] - 2025-03-12
+## Changed
+- Make normal inputs optional, allow tumor only mode: https://jira.oicr.on.ca/browse/GRD-911
+
 ## [1.0.5] - 2024-12-11
 ### Added
 - provision out unfiltered maf
