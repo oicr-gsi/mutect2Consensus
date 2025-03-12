@@ -24,11 +24,11 @@ struct GenomeResources {
 workflow mutect2Consensus {
   input {
     InputGroup tumorInputGroup
-    InputGroup normalInputGroup
+    InputGroup? normalInputGroup
     String intervalFile
     String inputIntervalsToParalellizeBy
     String tumorName
-    String normalName
+    String? normalName
     String reference
     String gatk
     Boolean filterMafFile
@@ -57,60 +57,124 @@ workflow mutect2Consensus {
       }
   }
 
-  Array[InputGroup] inputGroups = [ tumorInputGroup, normalInputGroup ]
-  scatter (ig in inputGroups) { 
-    Array[BamAndBamIndex]partitionedBams = [ig.dcsScBamAndIndex, ig.sscsScBamAndIndex, ig.allUniqueBamAndIndex]
-    scatter ( bamAndIndex in partitionedBams ) {
-      call mutect2.mutect2 {
-        input:
-          tumorBam = bamAndIndex.bam,
-          tumorBai = bamAndIndex.bamIndex,
-          intervalFile = intervalFile,
-          intervalsToParallelizeBy = inputIntervalsToParalellizeBy,
-          reference = reference,
-          gatk = gatk,
-          outputFileNamePrefix = ig.outputFileNamePrefix
-      }
+  Array[BamAndBamIndex]tumor_partitionedBams = [tumorInputGroup.dcsScBamAndIndex, tumorInputGroup.sscsScBamAndIndex, tumorInputGroup.allUniqueBamAndIndex]
+  scatter ( bamAndIndex in tumor_partitionedBams ) {
+    call mutect2.mutect2 {
+      input:
+        tumorBam = bamAndIndex.bam,
+        tumorBai = bamAndIndex.bamIndex,
+        intervalFile = intervalFile,
+        intervalsToParallelizeBy = inputIntervalsToParalellizeBy,
+        reference = reference,
+        gatk = gatk,
+        outputFileNamePrefix = tumorInputGroup.outputFileNamePrefix
     }
-    Array[File] mutect2FilteredVcfFiles = mutect2.filteredVcfFile
-    Array[File] mutect2FilteredVcfIndexes = mutect2.filteredVcfIndex
+  }
+  Array[File] mutect2_tumor_VcfFiles = mutect2.filteredVcfFile
+  Array[File] mutect2_tumor_VcfIndexes = mutect2.filteredVcfIndex
 
-    call combineVariants {
+  call combineVariants {
+    input: 
+      inputVcfs = [mutect2_tumor_VcfFiles[0], mutect2_tumor_VcfFiles[1]],
+      inputIndexes = [mutect2_tumor_VcfIndexes[0],mutect2_tumor_VcfIndexes[1]],
+      priority = "mutect2-dcsSc,mutect2-sscsSc",
+      outputPrefix = tumorInputGroup.outputFileNamePrefix,
+      referenceFasta = resources[reference].inputRefFasta,
+      modules = resources[reference].combineVariants_modules
+  }
+
+  call annotation {
+    input: 
+      uniqueVcf = mutect2_tumor_VcfFiles[2],
+      uniqueVcfIndex = mutect2_tumor_VcfIndexes[2],
+      mergedVcf = combineVariants.combinedVcf,
+      mergedVcfIndex = combineVariants.combinedIndex,
+      outputPrefix = tumorInputGroup.outputFileNamePrefix
+  }
+
+  call vep.variantEffectPredictor as tumorVep {
+    input: 
+      vcfFile = annotation.annotatedCombinedVcf,
+      vcfIndex = annotation.annotatedCombinedIndex,
+      toMAF = true,
+      onlyTumor = true,
+      tumorOnlyAlign_updateTagValue = true,
+      vcf2maf_retainInfoProvided = true,
+      tumorName = tumorInputGroup.outputFileNamePrefix,
+      reference = reference
+  }
+
+  File? tumor_Maf = tumorVep.outputMaf
+
+  if (defined(normalInputGroup)) {
+    InputGroup normal = select_first([normalInputGroup])
+    
+    call mutect2.mutect2 as normalMutect2_dcs {
+      input:
+        tumorBam = normal.dcsScBamAndIndex.bam,
+        tumorBai = normal.dcsScBamAndIndex.bamIndex,
+        intervalFile = intervalFile,
+        intervalsToParallelizeBy = inputIntervalsToParalellizeBy,
+        reference = reference,
+        gatk = gatk,
+        outputFileNamePrefix = normalName + "_dcs"
+    }
+    
+    call mutect2.mutect2 as normalMutect2_sscs {
+      input:
+        tumorBam = normal.sscsScBamAndIndex.bam,
+        tumorBai = normal.sscsScBamAndIndex.bamIndex,
+        intervalFile = intervalFile,
+        intervalsToParallelizeBy = inputIntervalsToParalellizeBy,
+        reference = reference,
+        gatk = gatk,
+        outputFileNamePrefix = normalName + "_sscs"
+    }
+    
+    call mutect2.mutect2 as normalMutect2_allUnique {
+      input:
+        tumorBam = normal.allUniqueBamAndIndex.bam,
+        tumorBai = normal.allUniqueBamAndIndex.bamIndex,
+        intervalFile = intervalFile,
+        intervalsToParallelizeBy = inputIntervalsToParalellizeBy,
+        reference = reference,
+        gatk = gatk,
+        outputFileNamePrefix = normalName + "_allUnique"
+    }
+
+    call combineVariants as normalCombineVariants{
       input: 
-        inputVcfs = [mutect2FilteredVcfFiles[0],mutect2FilteredVcfFiles[1]],
-        inputIndexes = [mutect2FilteredVcfIndexes[0],mutect2FilteredVcfIndexes[1]],
+        inputVcfs = [normalMutect2_dcs.filteredVcfFile, normalMutect2_sscs.filteredVcfFile],
+        inputIndexes = [normalMutect2_dcs.filteredVcfFile, normalMutect2_sscs.filteredVcfIndex],
         priority = "mutect2-dcsSc,mutect2-sscsSc",
-        outputPrefix = ig.outputFileNamePrefix,
+        outputPrefix = normal.outputFileNamePrefix,
         referenceFasta = resources[reference].inputRefFasta,
         modules = resources[reference].combineVariants_modules
     }
 
-    call annotation {
+    call annotation as normalAnnotation {
       input: 
-        uniqueVcf = mutect2FilteredVcfFiles[2],
-        uniqueVcfIndex = mutect2FilteredVcfIndexes[2],
-        mergedVcf = combineVariants.combinedVcf,
-        mergedVcfIndex = combineVariants.combinedIndex,
-        outputPrefix = ig.outputFileNamePrefix
+        uniqueVcf = normalMutect2_allUnique.filteredVcfFile,
+        uniqueVcfIndex = normalMutect2_allUnique.filteredVcfIndex,
+        mergedVcf = normalCombineVariants.combinedVcf,
+        mergedVcfIndex = normalCombineVariants.combinedIndex,
+        outputPrefix = normal.outputFileNamePrefix
     }
 
-    call vep.variantEffectPredictor {
+    call vep.variantEffectPredictor as normalVep {
       input: 
-        vcfFile = annotation.annotatedCombinedVcf,
-        vcfIndex = annotation.annotatedCombinedIndex,
+        vcfFile = normalAnnotation.annotatedCombinedVcf,
+        vcfIndex = normalAnnotation.annotatedCombinedIndex,
         toMAF = true,
         onlyTumor = true,
         tumorOnlyAlign_updateTagValue = true,
         vcf2maf_retainInfoProvided = true,
-        tumorName = ig.outputFileNamePrefix,
+        tumorName = tumorInputGroup.outputFileNamePrefix,
         reference = reference
     }
+    File? normal_Maf = normalVep.outputMaf
   }
-  Array[File]mutect2FilteredVcfFilesArray = flatten(mutect2FilteredVcfFiles)
-  Array[File]mutect2FilteredVcfIndexesArray = flatten(mutect2FilteredVcfIndexes)
 
-  File? tumor_Maf = variantEffectPredictor.outputMaf[0]
-  File? normal_Maf = variantEffectPredictor.outputMaf[1]
   if (filterMafFile && defined(tumor_Maf) && defined(normal_Maf)) {
     call filterMaf {
       input:
@@ -120,62 +184,87 @@ workflow mutect2Consensus {
     }
   }
 
-  Array[Array[BamAndBamIndex]]partitionedBamPairs = [[tumorInputGroup.dcsScBamAndIndex, normalInputGroup.dcsScBamAndIndex], [tumorInputGroup.sscsScBamAndIndex, normalInputGroup.sscsScBamAndIndex], [tumorInputGroup.allUniqueBamAndIndex, normalInputGroup.allUniqueBamAndIndex]]
-  scatter ( bamAndIndexPair in partitionedBamPairs ) {
-    call mutect2.mutect2 as somaticMutect2 {
+  if (defined(normalInputGroup)) {
+    InputGroup normalInput = select_first([normalInputGroup])
+    
+    call mutect2.mutect2 as somaticMutect2_dcs {
       input:
-        tumorBam = bamAndIndexPair[0].bam,
-        tumorBai = bamAndIndexPair[0].bamIndex,
-        normalBam = bamAndIndexPair[1].bam,
-        normalBai = bamAndIndexPair[1].bamIndex,
+        tumorBam = tumorInputGroup.dcsScBamAndIndex.bam,
+        tumorBai = tumorInputGroup.dcsScBamAndIndex.bamIndex,
+        normalBam = normalInput.dcsScBamAndIndex.bam,
+        normalBai = normalInput.dcsScBamAndIndex.bamIndex,
         intervalFile = intervalFile,
         intervalsToParallelizeBy = inputIntervalsToParalellizeBy,
         reference = reference,
         gatk = gatk,
-        outputFileNamePrefix = tumorName + "_somatic"
+        outputFileNamePrefix = tumorName + "_dcs_somatic"
     }
-  }
-  Array[File] somaticMutect2FilteredVcfFiles = somaticMutect2.filteredVcfFile
-  Array[File] somaticMutect2FilteredVcfIndexes = somaticMutect2.filteredVcfIndex
-  
-  call combineVariants as somaticCombineVariants {
-    input: 
-      inputVcfs = [somaticMutect2FilteredVcfFiles[0],somaticMutect2FilteredVcfFiles[1]],
-      inputIndexes = [somaticMutect2FilteredVcfIndexes[0],somaticMutect2FilteredVcfIndexes[1]],
-      priority = "mutect2-dcsSc,mutect2-sscsSc",
-      outputPrefix = tumorName + "_somatic",
-      referenceFasta = resources[reference].inputRefFasta,
-      modules = resources[reference].combineVariants_modules
-  }
+    
+    call mutect2.mutect2 as somaticMutect2_sscs {
+      input:
+        tumorBam = tumorInputGroup.sscsScBamAndIndex.bam,
+        tumorBai = tumorInputGroup.sscsScBamAndIndex.bamIndex,
+        normalBam = normalInput.sscsScBamAndIndex.bam,
+        normalBai = normalInput.sscsScBamAndIndex.bamIndex,
+        intervalFile = intervalFile,
+        intervalsToParallelizeBy = inputIntervalsToParalellizeBy,
+        reference = reference,
+        gatk = gatk,
+        outputFileNamePrefix = tumorName + "_sscs_somatic"
+    }
+    
+    call mutect2.mutect2 as somaticMutect2_allUnique {
+      input:
+        tumorBam = tumorInputGroup.allUniqueBamAndIndex.bam,
+        tumorBai = tumorInputGroup.allUniqueBamAndIndex.bamIndex,
+        normalBam = normalInput.allUniqueBamAndIndex.bam,
+        normalBai = normalInput.allUniqueBamAndIndex.bamIndex,
+        intervalFile = intervalFile,
+        intervalsToParallelizeBy = inputIntervalsToParalellizeBy,
+        reference = reference,
+        gatk = gatk,
+        outputFileNamePrefix = tumorName + "_allUnique_somatic"
+    }
+    
+    call combineVariants as somaticCombineVariants {
+      input: 
+        inputVcfs = [somaticMutect2_dcs.filteredVcfFile, somaticMutect2_sscs.filteredVcfFile],
+        inputIndexes = [somaticMutect2_dcs.filteredVcfIndex, somaticMutect2_sscs.filteredVcfIndex],
+        priority = "mutect2-dcsSc,mutect2-sscsSc",
+        outputPrefix = tumorName + "_somatic",
+        referenceFasta = resources[reference].inputRefFasta,
+        modules = resources[reference].combineVariants_modules
+    }
 
-  call annotation as somaticAnnotation {
-    input: 
-      uniqueVcf = somaticMutect2FilteredVcfFiles[2],
-      uniqueVcfIndex = somaticMutect2FilteredVcfIndexes[2],
-      mergedVcf = somaticCombineVariants.combinedVcf,
-      mergedVcfIndex = somaticCombineVariants.combinedIndex,
-      outputPrefix = tumorName + "_somatic"
-  }
-
-  call vep.variantEffectPredictor as somaticVep{
-    input: 
-      vcfFile = somaticAnnotation.annotatedCombinedVcf,
-      vcfIndex = somaticAnnotation.annotatedCombinedIndex,
-      toMAF = true,
-      onlyTumor = false,
-      tumorName = tumorName,
-      normalName = normalName,
-      tumorOnlyAlign_updateTagValue = true,
-      vcf2maf_retainInfoProvided = true,
-      reference = reference
-  }
-
-  if (filterMafFile) {
-    call filterMaf as somaticFilterMaf {
-        input:
-        mafFile = somaticVep.outputMaf,
+    call annotation as somaticAnnotation {
+      input: 
+        uniqueVcf = somaticMutect2_allUnique.filteredVcfFile,
+        uniqueVcfIndex = somaticMutect2_allUnique.filteredVcfIndex,
+        mergedVcf = somaticCombineVariants.combinedVcf,
+        mergedVcfIndex = somaticCombineVariants.combinedIndex,
         outputPrefix = tumorName + "_somatic"
-      }
+    }
+
+    call vep.variantEffectPredictor as somaticVep{
+      input: 
+        vcfFile = somaticAnnotation.annotatedCombinedVcf,
+        vcfIndex = somaticAnnotation.annotatedCombinedIndex,
+        toMAF = true,
+        onlyTumor = false,
+        tumorName = tumorName,
+        normalName = normalName,
+        tumorOnlyAlign_updateTagValue = true,
+        vcf2maf_retainInfoProvided = true,
+        reference = reference
+    }
+
+    if (filterMafFile) {
+      call filterMaf as somaticFilterMaf {
+          input:
+          mafFile = somaticVep.outputMaf,
+          outputPrefix = tumorName + "_somatic"
+        }
+    }
   }
 
   meta {
@@ -261,14 +350,14 @@ workflow mutect2Consensus {
   }
 
   output {
-    File tumorVcf = variantEffectPredictor.outputVcf[0]
-    File tumorVcfIndex = variantEffectPredictor.outputTbi[0]
-    File normalVcf = variantEffectPredictor.outputVcf[1]
-    File normalVcfIndex = variantEffectPredictor.outputTbi[1]
-    File somaticVcf = somaticVep.outputVcf
-    File somaticVcfIndex = somaticVep.outputTbi
-    File? tumorMaf = variantEffectPredictor.outputMaf[0]
-    File? normalMaf = variantEffectPredictor.outputMaf[1]
+    File tumorVcf = tumorVep.outputVcf
+    File tumorVcfIndex = tumorVep.outputTbi
+    File? normalVcf = normalVep.outputVcf
+    File? normalVcfIndex = normalVep.outputTbi
+    File? somaticVcf = somaticVep.outputVcf
+    File? somaticVcfIndex = somaticVep.outputTbi
+    File? tumorMaf = tumorVep.outputMaf
+    File? normalMaf = normalVep.outputMaf
     File? somaticMaf = somaticVep.outputMaf
     File? tumorFilteredMaf = filterMaf.filteredMaf
     File? somaticFilteredMaf = somaticFilterMaf.filteredMaf
