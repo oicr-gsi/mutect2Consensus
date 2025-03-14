@@ -105,20 +105,18 @@ Array[InputGroup] inputGroups = select_all([tumorInputGroup,normalInputGroup])
         reference = reference
     }
   }
-  Array[File]mutect2FilteredVcfFilesArray = flatten(mutect2FilteredVcfFiles)
-  Array[File]mutect2FilteredVcfIndexesArray = flatten(mutect2FilteredVcfIndexes)
 
-  File? tumor_Maf = variantEffectPredictor.outputMaf[0]
   if (defined(normalInputGroup)){
     File? normal_maf = variantEffectPredictor.outputMaf[1]
-    File? normal_vcf = mutect2FilteredVcfFilesArray[1]
-    File? normal_vcf_index = mutect2FilteredVcfIndexesArray[1]
+    File? normal_vcf = variantEffectPredictor.outputVcf[1]
+    File? normal_vcf_index = variantEffectPredictor.outputTbi[1]
   }
 
-  if (filterMafFile && defined(tumor_Maf) && defined(normal_maf)) {
+  File? tumor_maf = variantEffectPredictor.outputMaf[0]
+  if (filterMafFile && defined(tumor_maf) && defined(normal_maf)) {
     call filterMaf {
       input:
-      mafFile = tumor_Maf,
+      mafFile = tumor_maf,
       mafNormalFile = normal_maf,
       outputPrefix = tumorName
     }
@@ -185,7 +183,19 @@ Array[InputGroup] inputGroups = select_all([tumorInputGroup,normalInputGroup])
         }
     }
   }
-  
+  output {
+    File tumorVcf = variantEffectPredictor.outputVcf[0]
+    File tumorVcfIndex = variantEffectPredictor.outputTbi[0]
+    File? normalVcf = normal_vcf
+    File? normalVcfIndex = normal_vcf_index
+    File? somaticVcf = somaticVep.outputVcf
+    File? somaticVcfIndex = somaticVep.outputTbi
+    File? tumorMaf = tumor_maf
+    File? normalMaf = normal_maf
+    File? somaticMaf = somaticVep.outputMaf
+    File? tumorFilteredMaf = filterMaf.filteredMaf
+    File? somaticFilteredMaf = somaticFilterMaf.filteredMaf
+  }
 
   meta {
     author: "Alexander Fortuna, Rishi Shah and Gavin Peng"
@@ -267,20 +277,6 @@ Array[InputGroup] inputGroups = select_all([tumorInputGroup,normalInputGroup])
           vidarr_label: "somaticFilterredMaf"
       }
     }
-  }
-
-  output {
-    File tumorVcf = variantEffectPredictor.outputVcf[0]
-    File tumorVcfIndex = variantEffectPredictor.outputTbi[0]
-    File? normalVcf = normal_vcf
-    File? normalVcfIndex = normal_vcf_index
-    File? somaticVcf = somaticVep.outputVcf
-    File? somaticVcfIndex = somaticVep.outputTbi
-    File? tumorMaf = variantEffectPredictor.outputMaf[0]
-    File? normalMaf = normal_maf
-    File? somaticMaf = somaticVep.outputMaf
-    File? tumorFilteredMaf = filterMaf.filteredMaf
-    File? somaticFilteredMaf = somaticFilterMaf.filteredMaf
   }
 }
 
