@@ -6,6 +6,7 @@
             "mutect2Consensus.gatk": "gatk/4.1.6.0",
             "mutect2Consensus.filterMafFile": true,
             "mutect2Consensus.somaticMutect2.outputFileNamePrefix": null,
+            "mutect2Consensus.normalMutect2.outputFileNamePrefix": null,
             "mutect2Consensus.annotation.jobMemory": null,
             "mutect2Consensus.annotation.modules": null,
             "mutect2Consensus.annotation.threads": null,
@@ -44,7 +45,6 @@
                 "mutect2-sscsSc"
             ],
             "mutect2Consensus.somaticMutect2.filter_filterExtraArgs": null,
-            "somaticMutect2.outputFileNamePrefix": null,
             "mutect2Consensus.somaticMutect2.filter_memory": null,
             "mutect2Consensus.somaticMutect2.filter_timeout": null,
             "mutect2Consensus.somaticMutect2.gnomad": null,
@@ -455,7 +455,387 @@
             {
               "metrics_calculate": "@CHECKOUT@/tests/calculate.sh",
               "metrics_compare": "@CHECKOUT@/tests/compare.sh",
-              "output_metrics": "/.mounts/labs/gsi/testdata/mutect2Consensus/output_expectation/1.0.5/TEST_0001.metrics",
+              "output_metrics": "/.mounts/labs/gsi/testdata/mutect2Consensus/output_expectation/1.0.6/TEST_0001.metrics",
+              "type": "script"
+            }
+          ]
+    },
+    {
+        "id": "TEST_tumorOnly",
+        "description": "runs the mutect2Consensus workflow with tumor/normal inputs",
+        "arguments": {
+            "mutect2Consensus.gatk": "gatk/4.1.6.0",
+            "mutect2Consensus.filterMafFile": true,
+            "mutect2Consensus.somaticMutect2.outputFileNamePrefix": null,
+            "mutect2Consensus.annotation.jobMemory": null,
+            "mutect2Consensus.annotation.modules": null,
+            "mutect2Consensus.annotation.threads": null,
+            "mutect2Consensus.annotation.timeout": null,
+            "mutect2Consensus.combineVariants.jobMemory": null,
+            "mutect2Consensus.combineVariants.threads": null,
+            "mutect2Consensus.combineVariants.timeout": null,
+            "mutect2Consensus.combineVariants.workflows":  [
+                "mutect2-dcsSc",
+                "mutect2-sscsSc"
+            ],
+            "mutect2Consensus.filterMaf.jobMemory": null,
+            "mutect2Consensus.filterMaf.modules": null,
+            "mutect2Consensus.filterMaf.threads": null,
+            "mutect2Consensus.filterMaf.timeout": null,
+            "mutect2Consensus.filterMaf.freqList": "$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt",
+            "mutect2Consensus.filterMaf.genesToKeep": "$MAF_FILTERING_ROOT/genes_to_keep.txt",
+            "mutect2Consensus.somaticFilterMaf.jobMemory": null,
+            "mutect2Consensus.somaticFilterMaf.modules": null,
+            "mutect2Consensus.somaticFilterMaf.threads": null,
+            "mutect2Consensus.somaticFilterMaf.timeout": null,
+            "mutect2Consensus.somaticFilterMaf.freqList": "$MAF_FILTERING_ROOT/TGL.frequency.20210609.annot.txt",
+            "mutect2Consensus.somaticFilterMaf.genesToKeep": "$MAF_FILTERING_ROOT/genes_to_keep.txt",
+            "mutect2Consensus.somaticFilterMaf.mafNormalFile": null,
+            "mutect2Consensus.inputIntervalsToParalellizeBy": "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX,chrY",
+            "mutect2Consensus.intervalFile": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/CHARM.TS.hg38.bed",
+            "mutect2Consensus.somaticAnnotation.jobMemory": null,
+            "mutect2Consensus.somaticAnnotation.modules": null,
+            "mutect2Consensus.somaticAnnotation.threads": null,
+            "mutect2Consensus.somaticAnnotation.timeout": null,
+            "mutect2Consensus.somaticCombineVariants.jobMemory": null,
+            "mutect2Consensus.somaticCombineVariants.threads": null,
+            "mutect2Consensus.somaticCombineVariants.timeout": null,
+            "mutect2Consensus.somaticCombineVariants.workflows": [
+                "mutect2-dcsSc",
+                "mutect2-sscsSc"
+            ],
+            "mutect2Consensus.somaticMutect2.filter_filterExtraArgs": null,
+            "mutect2Consensus.somaticMutect2.filter_memory": null,
+            "mutect2Consensus.somaticMutect2.filter_timeout": null,
+            "mutect2Consensus.somaticMutect2.gnomad": null,
+            "mutect2Consensus.somaticMutect2.gnomadIdx": null,
+            "mutect2Consensus.somaticMutect2.mergeStats_memory": null,
+            "mutect2Consensus.somaticMutect2.mergeStats_modules": null,
+            "mutect2Consensus.somaticMutect2.mergeStats_timeout": null,
+            "mutect2Consensus.somaticMutect2.mergeVCFs_memory": null,
+            "mutect2Consensus.somaticMutect2.mergeVCFs_timeout": null,
+            "mutect2Consensus.somaticMutect2.pon": null,
+            "mutect2Consensus.somaticMutect2.ponIdx": null,
+            "mutect2Consensus.somaticMutect2.reference": "hg38",
+            "mutect2Consensus.somaticMutect2.gatk": "gatk/4.1.6.0",
+            "mutect2Consensus.somaticMutect2.runMutect2_memory": null,
+            "mutect2Consensus.somaticMutect2.runMutect2_mutect2ExtraArgs": null,
+            "mutect2Consensus.somaticMutect2.runMutect2_mutectTag": null,
+            "mutect2Consensus.somaticMutect2.runMutect2_threads": null,
+            "mutect2Consensus.somaticMutect2.runMutect2_timeout": null,
+            "mutect2Consensus.somaticMutect2.splitStringToArray_lineSeparator": null,
+            "mutect2Consensus.somaticMutect2.splitStringToArray_memory": null,
+            "mutect2Consensus.somaticMutect2.splitStringToArray_modules": null,
+            "mutect2Consensus.somaticMutect2.splitStringToArray_timeout": null,
+            "mutect2Consensus.somaticVep.chromosomeArray_jobMemory": null,
+            "mutect2Consensus.somaticVep.chromosomeArray_threads": null,
+            "mutect2Consensus.somaticVep.chromosomeArray_timeout": null,
+            "mutect2Consensus.somaticVep.getSampleNames_jobMemory": null,
+            "mutect2Consensus.somaticVep.getSampleNames_threads": null,
+            "mutect2Consensus.somaticVep.getSampleNames_timeout": null,
+            "mutect2Consensus.somaticVep.mergeMafs_jobMemory": null,
+            "mutect2Consensus.somaticVep.mergeMafs_modules": null,
+            "mutect2Consensus.somaticVep.mergeMafs_threads": null,
+            "mutect2Consensus.somaticVep.mergeMafs_timeout": null,
+            "mutect2Consensus.somaticVep.mergeVcfs_extraArgs": null,
+            "mutect2Consensus.somaticVep.mergeVcfs_jobMemory": null,
+            "mutect2Consensus.somaticVep.mergeVcfs_modules": null,
+            "mutect2Consensus.somaticVep.mergeVcfs_overhead": null,
+            "mutect2Consensus.somaticVep.mergeVcfs_threads": null,
+            "mutect2Consensus.somaticVep.mergeVcfs_timeout": null,
+            "mutect2Consensus.somaticVep.normalName": null,
+            "mutect2Consensus.somaticVep.tumorName": null,
+            "mutect2Consensus.somaticVep.subsetVcf_basename": null,
+            "mutect2Consensus.somaticVep.subsetVcf_jobMemory": null,
+            "mutect2Consensus.somaticVep.subsetVcf_modules": null,
+            "mutect2Consensus.somaticVep.subsetVcf_threads": null,
+            "mutect2Consensus.somaticVep.subsetVcf_timeout": null,
+            "mutect2Consensus.somaticVep.targetBed": null,
+            "mutect2Consensus.somaticVep.targetBedTask_basename": null,
+            "mutect2Consensus.somaticVep.targetBedTask_jobMemory": null,
+            "mutect2Consensus.somaticVep.targetBedTask_modules": null,
+            "mutect2Consensus.somaticVep.targetBedTask_threads": null,
+            "mutect2Consensus.somaticVep.targetBedTask_timeout": null,
+            "mutect2Consensus.somaticVep.tumorOnlyAlign_basename": null,
+            "mutect2Consensus.somaticVep.tumorOnlyAlign_jobMemory": null,
+            "mutect2Consensus.somaticVep.tumorOnlyAlign_modules": null,
+            "mutect2Consensus.somaticVep.tumorOnlyAlign_threads": null,
+            "mutect2Consensus.somaticVep.tumorOnlyAlign_timeout": null,
+            "mutect2Consensus.somaticVep.vcf2maf_basename": null,
+            "mutect2Consensus.somaticVep.vcf2maf_bufferSize": null,
+            "mutect2Consensus.somaticVep.vcf2maf_jobMemory": null,
+            "mutect2Consensus.somaticVep.vcf2maf_minHomVaf": null,
+            "mutect2Consensus.somaticVep.vcf2maf_species": null,
+            "mutect2Consensus.somaticVep.vcf2maf_threads": null,
+            "mutect2Consensus.somaticVep.vcf2maf_timeout": null,
+            "mutect2Consensus.somaticVep.vcf2maf_vepStats": null,
+            "mutect2Consensus.somaticVep.vep_addParam": null,
+            "mutect2Consensus.somaticVep.vep_basename": null,
+            "mutect2Consensus.somaticVep.vep_jobMemory": null,
+            "mutect2Consensus.somaticVep.vep_species": null,
+            "mutect2Consensus.somaticVep.vep_threads": null,
+            "mutect2Consensus.somaticVep.vep_timeout": null,
+            "mutect2Consensus.somaticVep.vep_vepStats": null,
+            "mutect2Consensus.somaticVep.reference": "hg38",
+            "mutect2Consensus.mutect2.filter_filterExtraArgs": null,
+            "mutect2Consensus.mutect2.filter_memory": null,
+            "mutect2Consensus.mutect2.filter_timeout": null,
+            "mutect2Consensus.mutect2.gnomad": null,
+            "mutect2Consensus.mutect2.gnomadIdx": null,
+            "mutect2Consensus.mutect2.mergeStats_memory": null,
+            "mutect2Consensus.mutect2.mergeStats_modules": null,
+            "mutect2Consensus.mutect2.mergeStats_timeout": null,
+            "mutect2Consensus.mutect2.mergeVCFs_memory": null,
+            "mutect2Consensus.mutect2.mergeVCFs_timeout": null,
+            "mutect2Consensus.mutect2.normalBai": null,
+            "mutect2Consensus.mutect2.normalBam": null,
+            "mutect2Consensus.mutect2.pon": null,
+            "mutect2Consensus.mutect2.ponIdx": null,
+            "mutect2Consensus.mutect2.reference": "hg38",
+            "mutect2Consensus.mutect2.gatk": "gatk/4.1.6.0",
+            "mutect2Consensus.mutect2.runMutect2_memory": null,
+            "mutect2Consensus.mutect2.runMutect2_mutect2ExtraArgs": null,
+            "mutect2Consensus.mutect2.runMutect2_mutectTag": null,
+            "mutect2Consensus.mutect2.runMutect2_threads": null,
+            "mutect2Consensus.mutect2.runMutect2_timeout": null,
+            "mutect2Consensus.mutect2.splitStringToArray_lineSeparator": null,
+            "mutect2Consensus.mutect2.splitStringToArray_memory": null,
+            "mutect2Consensus.mutect2.splitStringToArray_modules": null,
+            "mutect2Consensus.mutect2.splitStringToArray_timeout": null,
+            "mutect2Consensus.normalName": null,
+            "mutect2Consensus.normalInputGroup":null,
+            "mutect2Consensus.reference": "hg38",
+            "mutect2Consensus.tumorInputGroup":{
+                "outputFileNamePrefix": "TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1",
+                "allUniqueBamAndIndex": {
+                    "bam": {
+                        "contents": {
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.all.unique.dcs.sorted.bam",
+                            "externalIds": [
+                                {
+                                    "id": "TEST",
+                                    "provider": "TEST"
+                                }
+                            ]
+                        },
+                        "type": "EXTERNAL"
+                    },
+                    "bamIndex": {
+                        "contents": {
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.all.unique.dcs.sorted.bam.bai",
+                            "externalIds": [
+                                {
+                                    "id": "TEST",
+                                    "provider": "TEST"
+                                }
+                            ]
+                        },
+                        "type": "EXTERNAL"
+                    }
+                },
+                "dcsScBamAndIndex": {
+                    "bam": {
+                        "contents": {
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.dcs.sc.sorted.bam",
+                            "externalIds": [
+                                {
+                                    "id": "TEST",
+                                    "provider": "TEST"
+                                }
+                            ]
+                        },
+                        "type": "EXTERNAL"
+                    },
+                    "bamIndex":  {
+                        "contents": {
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.dcs.sc.sorted.bam.bai",
+                            "externalIds": [
+                                {
+                                    "id": "TEST",
+                                    "provider": "TEST"
+                                }
+                            ]
+                        },
+                        "type": "EXTERNAL"
+                    }
+                },
+                "sscsScBamAndIndex": {
+                    "bam":  {
+                        "contents": {
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.sscs.sc.sorted.bam",
+                            "externalIds": [
+                                {
+                                    "id": "TEST",
+                                    "provider": "TEST"
+                                }
+                            ]
+                        },
+                        "type": "EXTERNAL"
+                    },
+                    "bamIndex": {
+                        "contents": {
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.sscs.sc.sorted.bam.bai",
+                            "externalIds": [
+                                {
+                                    "id": "TEST",
+                                    "provider": "TEST"
+                                }
+                            ]
+                        },
+                        "type": "EXTERNAL"
+                    }
+                }
+            },
+            "mutect2Consensus.tumorName": "TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1",
+            "mutect2Consensus.variantEffectPredictor.chromosomeArray_jobMemory": null,
+            "mutect2Consensus.variantEffectPredictor.chromosomeArray_threads": null,
+            "mutect2Consensus.variantEffectPredictor.chromosomeArray_timeout": null,
+            "mutect2Consensus.variantEffectPredictor.getSampleNames_jobMemory": null,
+            "mutect2Consensus.variantEffectPredictor.getSampleNames_threads": null,
+            "mutect2Consensus.variantEffectPredictor.getSampleNames_timeout": null,
+            "mutect2Consensus.variantEffectPredictor.mergeMafs_jobMemory": null,
+            "mutect2Consensus.variantEffectPredictor.mergeMafs_modules": null,
+            "mutect2Consensus.variantEffectPredictor.mergeMafs_threads": null,
+            "mutect2Consensus.variantEffectPredictor.mergeMafs_timeout": null,
+            "mutect2Consensus.variantEffectPredictor.mergeVcfs_extraArgs": null,
+            "mutect2Consensus.variantEffectPredictor.mergeVcfs_jobMemory": null,
+            "mutect2Consensus.variantEffectPredictor.mergeVcfs_modules": null,
+            "mutect2Consensus.variantEffectPredictor.mergeVcfs_overhead": null,
+            "mutect2Consensus.variantEffectPredictor.mergeVcfs_threads": null,
+            "mutect2Consensus.variantEffectPredictor.mergeVcfs_timeout": null,
+            "mutect2Consensus.variantEffectPredictor.normalName": null,
+            "mutect2Consensus.variantEffectPredictor.subsetVcf_basename": null,
+            "mutect2Consensus.variantEffectPredictor.subsetVcf_jobMemory": null,
+            "mutect2Consensus.variantEffectPredictor.subsetVcf_modules": null,
+            "mutect2Consensus.variantEffectPredictor.subsetVcf_threads": null,
+            "mutect2Consensus.variantEffectPredictor.subsetVcf_timeout": null,
+            "mutect2Consensus.variantEffectPredictor.targetBed": null,
+            "mutect2Consensus.variantEffectPredictor.targetBedTask_basename": null,
+            "mutect2Consensus.variantEffectPredictor.targetBedTask_jobMemory": null,
+            "mutect2Consensus.variantEffectPredictor.targetBedTask_modules": null,
+            "mutect2Consensus.variantEffectPredictor.targetBedTask_threads": null,
+            "mutect2Consensus.variantEffectPredictor.targetBedTask_timeout": null,
+            "mutect2Consensus.variantEffectPredictor.tumorOnlyAlign_basename": null,
+            "mutect2Consensus.variantEffectPredictor.tumorOnlyAlign_jobMemory": null,
+            "mutect2Consensus.variantEffectPredictor.tumorOnlyAlign_modules": null,
+            "mutect2Consensus.variantEffectPredictor.tumorOnlyAlign_threads": null,
+            "mutect2Consensus.variantEffectPredictor.tumorOnlyAlign_timeout": null,
+            "mutect2Consensus.variantEffectPredictor.vcf2maf_basename": null,
+            "mutect2Consensus.variantEffectPredictor.vcf2maf_bufferSize": null,
+            "mutect2Consensus.variantEffectPredictor.vcf2maf_jobMemory": null,
+            "mutect2Consensus.variantEffectPredictor.vcf2maf_minHomVaf": null,
+            "mutect2Consensus.variantEffectPredictor.vcf2maf_species": null,
+            "mutect2Consensus.variantEffectPredictor.vcf2maf_threads": null,
+            "mutect2Consensus.variantEffectPredictor.vcf2maf_timeout": null,
+            "mutect2Consensus.variantEffectPredictor.vcf2maf_vepStats": null,
+            "mutect2Consensus.variantEffectPredictor.vep_addParam": null,
+            "mutect2Consensus.variantEffectPredictor.vep_basename": null,
+            "mutect2Consensus.variantEffectPredictor.vep_jobMemory": null,
+            "mutect2Consensus.variantEffectPredictor.vep_species": null,
+            "mutect2Consensus.variantEffectPredictor.vep_threads": null,
+            "mutect2Consensus.variantEffectPredictor.vep_timeout": null,
+            "mutect2Consensus.variantEffectPredictor.vep_vepStats": null,
+            "mutect2Consensus.variantEffectPredictor.reference": "hg38"
+        },
+        "engineArguments": {
+            "write_to_cache": false,
+            "read_from_cache": false
+          },
+        "metadata": {
+            "mutect2Consensus.tumorMaf": {
+                "contents": [
+                    {
+                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_tumorOnly_@JENKINSID@"
+                    }
+                ],
+                "type": "ALL"
+            },
+            "mutect2Consensus.normalMaf": {
+                "contents": [
+                    {
+                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_tumorOnly_@JENKINSID@"
+                    }
+                ],
+                "type": "ALL"
+            },
+            "mutect2Consensus.somaticMaf": {
+                "contents": [
+                    {
+                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_tumorOnly_@JENKINSID@"
+                    }
+                ],
+                "type": "ALL"
+            },
+            "mutect2Consensus.tumorFilteredMaf": {
+                "contents": [
+                    {
+                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_tumorOnly_@JENKINSID@"
+                    }
+                ],
+                "type": "ALL"
+            },
+            "mutect2Consensus.somaticVcf": {
+                "contents": [
+                    {
+                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_tumorOnly_@JENKINSID@"
+                    }
+                ],
+                "type": "ALL"
+            },
+            "mutect2Consensus.somaticVcfIndex": {
+                "contents": [
+                    {
+                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_tumorOnly_@JENKINSID@"
+                    }
+                ],
+                "type": "ALL"
+            },
+            "mutect2Consensus.somaticFilteredMaf": {
+                "contents": [
+                    {
+                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_tumorOnly_@JENKINSID@"
+                    }
+                ],
+                "type": "ALL"
+            },
+            "mutect2Consensus.normalVcf": {
+                "contents": [
+                    {
+                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_tumorOnly_@JENKINSID@"
+                    }
+                ],
+                "type": "ALL"
+            },
+            "mutect2Consensus.normalVcfIndex": {
+                "contents": [
+                    {
+                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_tumorOnly_@JENKINSID@"
+                    }
+                ],
+                "type": "ALL"
+            },
+            "mutect2Consensus.tumorVcf": {
+                "contents": [
+                    {
+                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_tumorOnly_@JENKINSID@"
+                    }
+                ],
+                "type": "ALL"
+            },
+            "mutect2Consensus.tumorVcfIndex": {
+                "contents": [
+                    {
+                        "outputDirectory": "@SCRATCH@/@DATE@_Workflow_mutect2ConsensusWorkflow_TEST_tumorOnly_@JENKINSID@"
+                    }
+                ],
+                "type": "ALL"
+            }
+        },
+        "validators": [
+            {
+              "metrics_calculate": "@CHECKOUT@/tests/calculate.sh",
+              "metrics_compare": "@CHECKOUT@/tests/compare.sh",
+              "output_metrics": "/.mounts/labs/gsi/testdata/mutect2Consensus/output_expectation/1.0.6/TEST_tumorOnly.metrics",
               "type": "script"
             }
           ]
