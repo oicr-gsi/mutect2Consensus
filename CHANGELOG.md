@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - filtering for a panel of genes
 
+## [1.0.4] - 2024-11-14
+### Changed
+- Update maf-filtering module version.
+
 ## [1.0.3] - 2024-06-28
 ### Added
 - Added tumour and normal maf clean up before filtering (convert to numeric, replace NaN with 0)
@@ -27,5 +31,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed some ouptput files to simplify
 - Updated subworkflows to new version
 
-## [1.0.0] -2023-10-02
+## [1.0.2] - 2023-11-17
+### Fixed
+- Remove extra peroid in file extension
+
+## [1.0.1] - 2023-10-27
+### Added
+- Release a version atfer updated filter maf.
+
+## [1.0.0] - 2023-10-02
+### Added
 - Created new workflow
