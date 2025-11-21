@@ -3,7 +3,6 @@
         "id": "TEST_0001",
         "description": "runs the mutect2Consensus workflow with tumor/normal inputs",
         "arguments": {
-            "mutect2Consensus.gatk": "gatk/4.1.6.0",
             "mutect2Consensus.filterMafFile": true,
             "mutect2Consensus.somaticMutect2.outputFileNamePrefix": null,
             "mutect2Consensus.normalMutect2.outputFileNamePrefix": null,
@@ -464,7 +463,6 @@
         "id": "TEST_tumorOnly",
         "description": "runs the mutect2Consensus workflow with tumor/normal inputs",
         "arguments": {
-            "mutect2Consensus.gatk": "gatk/4.1.6.0",
             "mutect2Consensus.filterMafFile": true,
             "mutect2Consensus.somaticMutect2.outputFileNamePrefix": null,
             "mutect2Consensus.annotation.jobMemory": null,
