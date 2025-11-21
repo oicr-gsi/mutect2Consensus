@@ -454,7 +454,7 @@
             {
               "metrics_calculate": "@CHECKOUT@/tests/calculate.sh",
               "metrics_compare": "@CHECKOUT@/tests/compare.sh",
-              "output_metrics": "/.mounts/labs/gsi/testdata/mutect2Consensus/output_expectation/1.0.6/TEST_0001.metrics",
+              "output_metrics": "/.mounts/labs/gsi/testdata/mutect2Consensus/output_expectation/1.0.8/TEST_0001.metrics",
               "type": "script"
             }
           ]
@@ -833,7 +833,7 @@
             {
               "metrics_calculate": "@CHECKOUT@/tests/calculate.sh",
               "metrics_compare": "@CHECKOUT@/tests/compare.sh",
-              "output_metrics": "/.mounts/labs/gsi/testdata/mutect2Consensus/output_expectation/1.0.6/TEST_tumorOnly.metrics",
+              "output_metrics": "/.mounts/labs/gsi/testdata/mutect2Consensus/output_expectation/1.0.8/TEST_tumorOnly.metrics",
               "type": "script"
             }
           ]
