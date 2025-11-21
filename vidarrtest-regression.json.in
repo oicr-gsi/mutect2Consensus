@@ -31,7 +31,7 @@
             "mutect2Consensus.somaticFilterMaf.genesToKeep": "$MAF_FILTERING_ROOT/genes_to_keep.txt",
             "mutect2Consensus.somaticFilterMaf.mafNormalFile": null,
             "mutect2Consensus.inputIntervalsToParalellizeBy": "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX,chrY",
-            "mutect2Consensus.intervalFile": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/CHARM.TS.hg38.bed",
+            "mutect2Consensus.intervalFile": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/CHARM.TS.hg38.bed",
             "mutect2Consensus.somaticAnnotation.jobMemory": null,
             "mutect2Consensus.somaticAnnotation.modules": null,
             "mutect2Consensus.somaticAnnotation.threads": null,
@@ -142,11 +142,11 @@
             "mutect2Consensus.mutect2.splitStringToArray_modules": null,
             "mutect2Consensus.mutect2.splitStringToArray_timeout": null,
             "mutect2Consensus.normalInputGroup": {
-                "outputFileNamePrefix": "TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B",
+                "outputFileNamePrefix": "Test02-Normal",
                 "allUniqueBamAndIndex": {
                     "bam": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.all.unique.dcs.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test02.all.unique.dcs.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -158,7 +158,7 @@
                     },
                     "bamIndex": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.all.unique.dcs.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test02.all.unique.dcs.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -172,7 +172,7 @@
                 "dcsScBamAndIndex": {
                     "bam": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.dcs.sc.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test02.dcs.sc.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -184,7 +184,7 @@
                     },
                     "bamIndex":  {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.dcs.sc.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test02.dcs.sc.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -198,7 +198,7 @@
                 "sscsScBamAndIndex": {
                     "bam":  {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.sscs.sc.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test02.sscs.sc.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -210,7 +210,7 @@
                     },
                     "bamIndex": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Ly_R_TS_LIB-04-0590-T0-B.sscs.sc.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test02.sscs.sc.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -225,11 +225,11 @@
             "mutect2Consensus.normalName": "TGL49_0214_Ly_R_TS_LIB-04-0590",
             "mutect2Consensus.reference": "hg38",
             "mutect2Consensus.tumorInputGroup":{
-                "outputFileNamePrefix": "TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1",
+                "outputFileNamePrefix": "Test01-Tumour",
                 "allUniqueBamAndIndex": {
                     "bam": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.all.unique.dcs.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test01.all.unique.dcs.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -241,7 +241,7 @@
                     },
                     "bamIndex": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.all.unique.dcs.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test01.all.unique.dcs.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -255,7 +255,7 @@
                 "dcsScBamAndIndex": {
                     "bam": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.dcs.sc.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test01.dcs.sc.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -267,7 +267,7 @@
                     },
                     "bamIndex":  {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.dcs.sc.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test01.dcs.sc.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -281,7 +281,7 @@
                 "sscsScBamAndIndex": {
                     "bam":  {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.sscs.sc.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test01.sscs.sc.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -293,7 +293,7 @@
                     },
                     "bamIndex": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.sscs.sc.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test01.sscs.sc.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -305,7 +305,7 @@
                     }
                 }
             },
-            "mutect2Consensus.tumorName": "TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1",
+            "mutect2Consensus.tumorName": "Test01",
             "mutect2Consensus.variantEffectPredictor.chromosomeArray_jobMemory": null,
             "mutect2Consensus.variantEffectPredictor.chromosomeArray_threads": null,
             "mutect2Consensus.variantEffectPredictor.chromosomeArray_timeout": null,
@@ -490,7 +490,7 @@
             "mutect2Consensus.somaticFilterMaf.genesToKeep": "$MAF_FILTERING_ROOT/genes_to_keep.txt",
             "mutect2Consensus.somaticFilterMaf.mafNormalFile": null,
             "mutect2Consensus.inputIntervalsToParalellizeBy": "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX,chrY",
-            "mutect2Consensus.intervalFile": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/CHARM.TS.hg38.bed",
+            "mutect2Consensus.intervalFile": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/CHARM.TS.hg38.bed",
             "mutect2Consensus.somaticAnnotation.jobMemory": null,
             "mutect2Consensus.somaticAnnotation.modules": null,
             "mutect2Consensus.somaticAnnotation.threads": null,
@@ -604,11 +604,11 @@
             "mutect2Consensus.normalInputGroup":null,
             "mutect2Consensus.reference": "hg38",
             "mutect2Consensus.tumorInputGroup":{
-                "outputFileNamePrefix": "TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1",
+                "outputFileNamePrefix": "Test01-Tumour",
                 "allUniqueBamAndIndex": {
                     "bam": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.all.unique.dcs.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test01.all.unique.dcs.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -620,7 +620,7 @@
                     },
                     "bamIndex": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.all.unique.dcs.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test01.all.unique.dcs.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -634,7 +634,7 @@
                 "dcsScBamAndIndex": {
                     "bam": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.dcs.sc.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test01.dcs.sc.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -646,7 +646,7 @@
                     },
                     "bamIndex":  {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.dcs.sc.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test01.dcs.sc.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -660,7 +660,7 @@
                 "sscsScBamAndIndex": {
                     "bam":  {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.sscs.sc.sorted.bam",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test01.sscs.sc.sorted.bam",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -672,7 +672,7 @@
                     },
                     "bamIndex": {
                         "contents": {
-                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/input_data/TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1.sscs.sc.sorted.bam.bai",
+                            "configuration": "/.mounts/labs/gsi/testdata/mutect2Consensus/test_inputs/Test01.sscs.sc.sorted.bam.bai",
                             "externalIds": [
                                 {
                                     "id": "TEST",
@@ -684,7 +684,7 @@
                     }
                 }
             },
-            "mutect2Consensus.tumorName": "TGL49_0214_Cf_n_TS_BBCGP_4042_112696_LIB-04-0590_856077_Pl_1",
+            "mutect2Consensus.tumorName": "Test01",
             "mutect2Consensus.variantEffectPredictor.chromosomeArray_jobMemory": null,
             "mutect2Consensus.variantEffectPredictor.chromosomeArray_threads": null,
             "mutect2Consensus.variantEffectPredictor.chromosomeArray_timeout": null,
