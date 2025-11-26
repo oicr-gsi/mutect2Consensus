@@ -30,7 +30,6 @@ workflow mutect2Consensus {
     String tumorName
     String? normalName
     String reference
-    String gatk
     Boolean filterMafFile
   }
 
@@ -42,7 +41,6 @@ workflow mutect2Consensus {
     tumorName: "Name of the tumor sample"
     normalName: "name of the normal sample"
     reference: "reference version"
-    gatk: "gatk version to be used"
     filterMafFile: "whether filter the maf file"
   }
 
@@ -67,7 +65,7 @@ Array[InputGroup] inputGroups = select_all([tumorInputGroup,normalInputGroup])
           intervalFile = intervalFile,
           intervalsToParallelizeBy = inputIntervalsToParalellizeBy,
           reference = reference,
-          gatk = gatk,
+          gatk = "gatk/4.2.6.1",
           outputFileNamePrefix = ig.outputFileNamePrefix
       }
     }
@@ -136,7 +134,7 @@ Array[InputGroup] inputGroups = select_all([tumorInputGroup,normalInputGroup])
           intervalFile = intervalFile,
           intervalsToParallelizeBy = inputIntervalsToParalellizeBy,
           reference = reference,
-          gatk = gatk,
+          gatk = "gatk/4.2.6.1",
           outputFileNamePrefix = tumorName + "_dcs_somatic"
       }
     }
@@ -215,7 +213,7 @@ Array[InputGroup] inputGroups = select_all([tumorInputGroup,normalInputGroup])
       url: "https://useast.ensembl.org/info/docs/tools/vep/"
      },
      {
-      name: "gatk/4.1.6.0",
+      name: "gatk/4.2.6.1",
       url: "https://gatk.broadinstitute.org/"
      },
      {
