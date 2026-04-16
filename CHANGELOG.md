@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.0] - 2026-04-16
 ## Changed 
-- Added hg38 noAlt reference
+- Replaced hg38 with hg38 noAlt reference
 - [GRD-1095](https://jira.oicr.on.ca/browse/GRD-1095)
 
 ## [1.0.8] - 2025-11-21

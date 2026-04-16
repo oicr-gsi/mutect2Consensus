@@ -50,10 +50,6 @@ workflow mutect2Consensus {
       "combineVariants_modules": "gatk/3.6-0 tabix/0.2.6 hg19/p13"
       },
     "hg38": {
-      "inputRefFasta": "$HG38_ROOT/hg38_random.fa",
-      "combineVariants_modules": "gatk/3.6-0 tabix/0.2.6 hg38/p12"
-      },
-    "hg38_noAlt": {
       "inputRefFasta": "$HG38_NOALT_ROOT/hg38_noAlt.fa",
       "combineVariants_modules": "gatk/3.6-0 tabix/0.2.6 hg38-noalt/p12"
       }
